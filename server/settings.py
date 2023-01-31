@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #'django.contrib.sites',
     'rest_framework',
     'accounts',
     'writing',
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -187,3 +189,11 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 
 # 이메일에 자동으로 표시되는 사이트 정보
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "OSOD "
+
+#####################소셜로그인 관련###################################
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = "366365490342-qil4b5f70tc75mr08biilvk0f9tks4it.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_SECRET = "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"
+STATE = "vyv2dj"
+
+SITE_ID = 1
