@@ -6,9 +6,10 @@ from allauth.account.adapter import get_adapter
 
 class UserSerializer(RegisterSerializer):
     nickname = serializers.CharField(max_length=50)
+    name = serializers.CharField(max_length=50)
     class Meta:
         model = User
-        fields = ['email', 'password', 'nickname']
+        fields = ['email', 'password', 'nickname', 'name']
 
     def get_cleaned_data(self):
         super(UserSerializer, self).get_cleaned_data()
@@ -30,4 +31,4 @@ class UserSerializer(RegisterSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'nickname']
+        fields = ['id', 'email', 'password', 'nickname', 'name']
