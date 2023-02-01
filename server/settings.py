@@ -192,8 +192,8 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = "OSOD "
 
 #####################소셜로그인 관련###################################
 
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = "366365490342-qil4b5f70tc75mr08biilvk0f9tks4it.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_SECRET = "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"
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = "545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_SECRET = "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"
 STATE = "vyv2dj"
 
 SITE_ID = 1
