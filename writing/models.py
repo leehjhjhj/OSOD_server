@@ -8,9 +8,10 @@ class Sentence(models.Model):
 
 class Post(models.Model):
     body = models.CharField(max_length=200)
-    writer = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     sentence = models.ForeignKey(Sentence, on_delete=models.CASCADE, null=True)
     like_users = models.ManyToManyField(User, related_name='like', null=True)
+    like_num = models.IntegerField(null=True, default=0)
 
 class Subsription(models.Model):
     sub_email = models.EmailField(max_length=50)
