@@ -12,6 +12,8 @@ class Post(models.Model):
     sentence = models.ForeignKey(Sentence, on_delete=models.CASCADE, null=True)
     like_users = models.ManyToManyField(User, related_name='like', null=True)
     like_num = models.IntegerField(null=True, default=0)
+    bool_like_users = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 class Subsription(models.Model):
     sub_email = models.EmailField(max_length=50)

@@ -144,10 +144,10 @@ def google_callback(request):
         accept_json = accept.json()
         #accept_json.pop('user', None)
         return JsonResponse(accept_json)
-    #except SocialAccount.DoesNotExist:
-        # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
 
-        #return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)     
+    except SocialAccount.DoesNotExist:
+        # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
+        return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)     
 
 
 

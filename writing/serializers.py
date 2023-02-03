@@ -10,11 +10,15 @@ class SentenceSerializer(serializers.ModelSerializer):
         fields = ['sentence', 'discription', 'created_at']
         
 class PostSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer()
+    user = UserDetailSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ["user", "sentence", "like_num"]
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like_users", "created_at"]
 
+class LikeUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'like_num', 'bool_like_users']
 
 
 
