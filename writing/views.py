@@ -91,19 +91,17 @@ class PostLikeAPIView(GenericAPIView):
             post.bool_like_users = False
             post.save(update_fields=['like_num', 'bool_like_users'])
             serializer = LikeUsersSerializer(post)
-            res = Response(
+            return Response(
                 serializer.data,
                 status = status.HTTP_200_OK
             )
-            return res
         else:
             post.like_users.add(user)
             post.like_num = post.like_users.count()
             post.bool_like_users = True
             post.save(update_fields=['like_num', 'bool_like_users'])
             serializer = LikeUsersSerializer(post)
-            res = Response(
+            return Response(
                 serializer.data,
                 status = status.HTTP_200_OK
             )
-            return res

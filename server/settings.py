@@ -151,6 +151,9 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+REST_FRAMEWORK = {
+    "DATETIME_FORMAT": '%Y-%m-%d', 
+}
 
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'accounts.serializers.UserSerializer',
