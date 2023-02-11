@@ -5,6 +5,7 @@ app_name = 'writing'
 urlpatterns = [
     path('sentence/', views.SentenceListCreateView.as_view(), name='SentenceListCreate'),
     path('sentence/<int:pk>/', views.SentenceRetrieveUpdateView.as_view(), name='RetrieveUpdate'),
+    path('main/', views.MainSentenceView.as_view(), name='MainSentenceView'),
     ##작문 관련##
     path('post/order/<int:sentence_id>/', views.PostOrderView.as_view(), name='PostOrderView'),
     path('post/create/<int:sentence_id>/', views.PostListCreateView.as_view(), name='PostCreateView'),

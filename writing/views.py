@@ -20,6 +20,17 @@ class PostPageNumberPagination(PageNumberPagination):
             ('postList', data),
         ]))
 
+class SentencePagination(PageNumberPagination):
+    page_size = 1
+
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('pageCnt', self.page.paginator.num_pages),
+            ('curPage', self.page.number),
+            ('postList', data),
+        ]))
+
+
 class SentenceListCreateView(ListCreateAPIView):
     queryset = Sentence.objects.all()
     serializer_class = SentenceSerializer
@@ -105,3 +116,11 @@ class PostLikeAPIView(GenericAPIView):
                 serializer.data,
                 status = status.HTTP_200_OK
             )
+        
+class MainSentenceView(ListAPIView):
+    serializer_class = SentenceSerializer
+    pagination_class = SentencePagination
+
+    def get_queryset(self):
+        return Sentence.objects.filter(is_valid=True).order_by('-created_at')
+

@@ -7,7 +7,7 @@ from accounts.models import User
 class SentenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sentence
-        fields = ['sentence', 'discription', 'created_at']
+        fields = ['id', 'sentence', 'discription', 'created_at', 'translate', 'is_valid']
         
 class PostSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer(read_only=True)

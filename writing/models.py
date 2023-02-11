@@ -3,8 +3,10 @@ from accounts.models import User
 
 class Sentence(models.Model):
     sentence = models.CharField(max_length=200)
-    discription =  models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    discription = models.CharField(max_length=200)
+    created_at = models.DateTimeField(null=True)
+    is_valid = models.BooleanField(default=False, null=True)
+    translate = models.CharField(max_length=200, null=True)
 
 class Post(models.Model):
     body = models.CharField(max_length=200)
@@ -16,4 +18,4 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 class Subsription(models.Model):
-    sub_email = models.EmailField(max_length=50)
+    sub_email = models.EmailField(unique=True, max_length=50)
