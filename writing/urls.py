@@ -13,4 +13,9 @@ urlpatterns = [
     path('post/<int:post_id>/likes/', views.PostLikeAPIView.as_view(), name='PostLikeAPIView'),
     ##구독 관련##
     path('subscription/create/', views.SubscriptionListCreateView.as_view(), name='SubscriptionListCreateView'),
+    ##기타 기능##
+    ##마이페이지 관련##
+    path('mypage/today/', views.MypageTodayIWroteView.as_view(), name='today'),
+    path('wrote/get_dates/', views.get_dates, name='get_dates'),
+    path('mypage/query=<str:date>/', views.MypageOrderView.as_view(), name='MypageOrderView'),
 ]

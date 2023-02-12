@@ -25,4 +25,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         model = Subsription
         fields = ['id', 'sub_email', 'sub_nickname']
 
-
+class MypageSerializer(serializers.ModelSerializer):
+    user = UserDetailSerializer(read_only=True)
+    sentence = SentenceSerializer(read_only=True)
+    class Meta:
+        model = Post
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like_users", "created_at"]

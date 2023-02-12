@@ -9,7 +9,10 @@ from rest_framework.pagination import PageNumberPagination
 from collections import OrderedDict
 from django.db.models.query import QuerySet
 from rest_framework import status
+from rest_framework.decorators import api_view
+from datetime import datetime, timedelta
 
+######################################################
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 4
 
@@ -29,7 +32,17 @@ class SentencePagination(PageNumberPagination):
             ('curPage', self.page.number),
             ('postList', data),
         ]))
+    
+class MypagePagination(PageNumberPagination):
+    page_size = 2
 
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('pageCnt', self.page.paginator.num_pages),
+            ('curPage', self.page.number),
+            ('postList', data),
+        ]))
+##########################################################
 
 class SentenceListCreateView(ListCreateAPIView):
     queryset = Sentence.objects.all()
@@ -128,21 +141,62 @@ class SubscriptionListCreateView(ListCreateAPIView):
     queryset = Subsription.objects.all()
     serializer_class = SubscriptionSerializer
 
-    # def perform_create(self, serializer):
-    #     # RegisteredUsers = User.objects.all()
-    #     # a = 1
-    #     # sub = serializer.validated_data.get('sub_email')
-    #     # #for registerUser in RegisteredUsers:
-    #     #     return JsonResponse({f'err_msg': '이미 회원가입한 이메일입니다., {sub} {RegisteredUsers}'}, status=status.HTTP_400_BAD_REQUEST)         
-    #     serializer.save()
-
     def create(self, request, *args, **kwargs):
-        RegisteredUsers = User.objects.all()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        for registeredUser in RegisteredUsers:
-            if registeredUser.email == serializer.validated_data.get('sub_email'):
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(email = serializer.validated_data.get('sub_email')).exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+###########################마이 페이지###########################################
+class MypageTodayIWroteView(ListAPIView):
+    serializer_class = MypageSerializer
+    pagination_class = SentencePagination
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        today = datetime.now().date()
+        return Post.objects.filter(user_id=user_id,
+                                   created_at__year=today.year,
+                                   created_at__month=today.month,
+                                   created_at__day=today.day,).order_by('-created_at')
+    
+@api_view(['GET'])
+def get_dates(request):
+    dates = {}
+    today = datetime.now().date()
+    dates['today'] = today.strftime('%m/%d')
+    for i in range(1, 7):
+        date = today - timedelta(days=i)
+        dates[f'{i}_days_ago'] = date.strftime('%m/%d')
+    return Response(dates)
+
+class MypageOrderView(ListAPIView):
+    serializer_class = MypageSerializer
+    pagination_class = MypagePagination
+
+    def get_queryset(self):
+        date = self.kwargs.get("date")
+        month, day = date.split("&")
+        user_id = self.request.user.id
+        return Post.objects.filter(created_at__year='2023',
+                                   created_at__month=month,
+                                   created_at__day=day,
+                                   user_id=user_id).order_by('-created_at')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        for post in queryset:
+            if post.like_users.filter(pk=self.request.user.id).exists():
+                post.bool_like_users = True
+            else:
+                post.bool_like_users = False
+            post.save(update_fields=['bool_like_users'])
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+#######################################################################
