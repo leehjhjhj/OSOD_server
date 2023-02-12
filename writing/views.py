@@ -124,3 +124,25 @@ class MainSentenceView(ListAPIView):
     def get_queryset(self):
         return Sentence.objects.filter(is_valid=True).order_by('-created_at')
 
+class SubscriptionListCreateView(ListCreateAPIView):
+    queryset = Subsription.objects.all()
+    serializer_class = SubscriptionSerializer
+
+    # def perform_create(self, serializer):
+    #     # RegisteredUsers = User.objects.all()
+    #     # a = 1
+    #     # sub = serializer.validated_data.get('sub_email')
+    #     # #for registerUser in RegisteredUsers:
+    #     #     return JsonResponse({f'err_msg': '이미 회원가입한 이메일입니다., {sub} {RegisteredUsers}'}, status=status.HTTP_400_BAD_REQUEST)         
+    #     serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        RegisteredUsers = User.objects.all()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        for registeredUser in RegisteredUsers:
+            if registeredUser.email == serializer.validated_data.get('sub_email'):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

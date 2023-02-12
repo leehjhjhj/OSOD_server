@@ -19,3 +19,4 @@ class Post(models.Model):
 
 class Subsription(models.Model):
     sub_email = models.EmailField(unique=True, max_length=50)
+    sub_nickname = models.CharField(max_length=50, unique=True, null=True)

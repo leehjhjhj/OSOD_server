@@ -20,6 +20,9 @@ class LikeUsersSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'like_num', 'bool_like_users']
 
-
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subsription
+        fields = ['id', 'sub_email', 'sub_nickname']
 
 

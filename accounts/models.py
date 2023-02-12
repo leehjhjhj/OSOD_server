@@ -9,3 +9,4 @@ class User(AbstractUser):
     username = None
     nickname = models.CharField(max_length=50, unique=True, null=True)
     name = models.CharField(max_length=50, unique=True, null=True)
+    subscription = models.BooleanField(default=False, null=True)
