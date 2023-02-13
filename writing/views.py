@@ -7,10 +7,10 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from rest_framework.pagination import PageNumberPagination
 from collections import OrderedDict
-from django.db.models.query import QuerySet
 from rest_framework import status
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta
+from rest_framework.views import APIView
 
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
@@ -58,7 +58,7 @@ class PostListCreateView(ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer):    
         sentence_id = self.kwargs.get("sentence_id")
         user_id = self.request.user.id
         serializer.save(user_id = user_id, sentence_id = sentence_id)
@@ -69,14 +69,15 @@ class PostOrderView(ListAPIView):
     pagination_class = PostPageNumberPagination
 
     def get_queryset(self):
-        self.cmd = self.request.META.get('HTTP_CMD')
+        #self.cmd = self.request.META.get('HTTP_CMD')
+        cmd = self.kwargs.get("cmd")
         sentence_id = self.kwargs.get("sentence_id")
         user_id = self.request.user.id
-        if self.cmd == "latest":
+        if cmd == "latest":
             return Post.objects.filter(sentence_id=sentence_id).order_by('-created_at')
-        elif self.cmd == "likes":
+        elif cmd == "likes":
             return Post.objects.filter(sentence_id=sentence_id).order_by('-like_num')
-        elif self.cmd == "my":
+        elif cmd == "my":
             return Post.objects.filter(sentence_id=sentence_id, user_id=user_id).order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
@@ -135,8 +136,13 @@ class MainSentenceView(ListAPIView):
     pagination_class = SentencePagination
 
     def get_queryset(self):
-        return Sentence.objects.filter(is_valid=True).order_by('-created_at')
-
+        today = datetime.now().date()
+        return Sentence.objects.filter(
+                                created_at__year=today.year,
+                                created_at__month=today.month,
+                                created_at__day=today.day,
+                                ).order_by('-created_at')
+    
 class SubscriptionListCreateView(ListCreateAPIView):
     queryset = Subsription.objects.all()
     serializer_class = SubscriptionSerializer
@@ -149,6 +155,8 @@ class SubscriptionListCreateView(ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+
 ###########################마이 페이지###########################################
 class MypageTodayIWroteView(ListAPIView):
     serializer_class = MypageSerializer
@@ -167,7 +175,7 @@ def get_dates(request):
     dates = {}
     today = datetime.now().date()
     dates['today'] = today.strftime('%m/%d')
-    for i in range(1, 7):
+    for i in range(1, 8):
         date = today - timedelta(days=i)
         dates[f'{i}_days_ago'] = date.strftime('%m/%d')
     return Response(dates)
@@ -199,4 +207,24 @@ class MypageOrderView(ListAPIView):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+class MypageUserDetailView(APIView):
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        posts = Post.objects.filter(user_id = user.id).count()
+        today = datetime.now().date()
+        sign_in_days = (today - user.date_joined.date()).days
+        data = {
+            "post_num" : posts,
+            "sign_in_days": sign_in_days
+        }
+        return Response(data)
+
+class WhatILikeView(ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.like.all().order_by('-created_at')
+
 #######################################################################
