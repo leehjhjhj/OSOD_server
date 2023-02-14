@@ -20,15 +20,25 @@ class SentenceSerializer(serializers.ModelSerializer):
     
 class PostSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer(read_only=True)
+    bool_like = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ["id", "user", "body", "sentence", "like_num", "bool_like_users", "created_at"]
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at"]
+
+    def get_bool_like(self, obj):
+        request = self.context.get("request")
+        if obj.like_users.filter(pk=request.user.id).exists():
+            return True
+        return False
+
+  
 
 class LikeUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'like_num', 'bool_like_users']
-
+        fields = ['id', 'like_num']
+    
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subsription
@@ -37,6 +47,14 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 class MypageSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer(read_only=True)
     sentence = SentenceSerializer(read_only=True)
+    bool_like = serializers.SerializerMethodField()
+    
     class Meta:
         model = Post
-        fields = ["id", "user", "body", "sentence", "like_num", "bool_like_users", "created_at"]
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at"]
+
+    def get_bool_like(self, obj):
+        request = self.context.get("request")
+        if obj.like_users.filter(pk=request.user.id).exists():
+            return True
+        return False

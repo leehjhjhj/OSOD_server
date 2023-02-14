@@ -81,14 +81,8 @@ class PostOrderView(ListAPIView):
             return Post.objects.filter(sentence_id=sentence_id, user_id=user_id).order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
-        for post in queryset:
-            if post.like_users.filter(pk=self.request.user.id).exists():
-                post.bool_like_users = True
-            else:
-                post.bool_like_users = False
-            post.save(update_fields=['bool_like_users'])
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -113,21 +107,23 @@ class PostLikeAPIView(GenericAPIView):
         if post.like_users.filter(pk=user.id).exists():
             post.like_users.remove(user)
             post.like_num = post.like_users.count()
-            post.bool_like_users = False
-            post.save(update_fields=['like_num', 'bool_like_users'])
-            serializer = LikeUsersSerializer(post)
+            bool_like = False
             return Response(
-                serializer.data,
+                {
+                "bool_like": bool_like,
+                "like_num": post.like_num
+                },
                 status = status.HTTP_200_OK
             )
         else:
             post.like_users.add(user)
             post.like_num = post.like_users.count()
-            post.bool_like_users = True
-            post.save(update_fields=['like_num', 'bool_like_users'])
-            serializer = LikeUsersSerializer(post)
+            bool_like = True
             return Response(
-                serializer.data,
+                {
+                "bool_like": bool_like,
+                "like_num": post.like_num
+                },
                 status = status.HTTP_200_OK
             )
         
@@ -194,14 +190,8 @@ class MypageOrderView(ListAPIView):
                                    user_id=user_id).order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
-        for post in queryset:
-            if post.like_users.filter(pk=self.request.user.id).exists():
-                post.bool_like_users = True
-            else:
-                post.bool_like_users = False
-            post.save(update_fields=['bool_like_users'])
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
