@@ -173,3 +173,15 @@ class CustomPasswordResetView(PasswordResetView):
             status=status.HTTP_200_OK,
         )
     
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data["uid"] = self.kwargs.get("uid")
+        data["token"] = self.kwargs.get("token")
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {'detail': ('Password has been reset with the new password.')},
+        )

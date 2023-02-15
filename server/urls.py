@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from accounts.views import CustomPasswordResetView
+from accounts.views import CustomPasswordResetView, CustomPasswordResetConfirmView
 # urls.py
 from dj_rest_auth.registration.views import VerifyEmailView, RegisterView
 from dj_rest_auth.views import (
@@ -18,14 +18,13 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='rest_logout'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', CustomPasswordResetView.as_view(), name='reset'),
-    path('password/reset/confirm/<uid>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password/reset/confirm/uid=<int:uid>&token=<str:token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # 회원가입
     path('registration/', RegisterView.as_view(), name='rest_register'),
 
 	path('accounts/', include('accounts.urls')),
     # 이메일 관련 필요
     path('accounts/allauth/', include('allauth.urls')),
-    #path('dj/password/reset/confirm/<uid>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # make sure this url is above `dj-rest-auth`'s password-reset url
     path('dj/', include('dj_rest_auth.urls')),
 
