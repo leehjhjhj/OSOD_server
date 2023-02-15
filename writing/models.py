@@ -16,6 +16,7 @@ class Post(models.Model):
     like_users = models.ManyToManyField(User, related_name='like', null=True)
     like_num = models.IntegerField(null=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    unknown = models.CharField(max_length=200, null=True)
 
 class Subsription(models.Model):
     sub_email = models.EmailField(unique=True, max_length=50)

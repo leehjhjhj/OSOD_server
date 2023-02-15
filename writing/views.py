@@ -11,6 +11,21 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta
 from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
+import random
+import string
+#####################################################
+
+def random_nickname():
+    a = random.randrange(0,10)
+    b = random.randrange(0,10)
+    first = ['영작하는', '영어천재', '거의 원어민', '영어마스터', '영작달인', '영어일등', '영작솜씨왕', '영문장달인', '영어고수', '영어박사']
+    second = ['참새', '직박구리', '갈매기', '메추리', '비둘기', '기러기', '까마귀', '딱따구리', '뻐꾸기', '꿩']
+    return f"{first[a]} {second[b]}"
+
+def random_string(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
 
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
@@ -58,10 +73,14 @@ class PostListCreateView(ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    def perform_create(self, serializer):    
+    def perform_create(self, serializer):
         sentence_id = self.kwargs.get("sentence_id")
-        user_id = self.request.user.id
-        serializer.save(user_id = user_id, sentence_id = sentence_id)
+        if self.request.user.is_authenticated:
+            user = self.request.user
+        else:
+            user = None
+            unknown = random_nickname()
+        serializer.save(user=user, sentence_id=sentence_id, unknown=unknown)
 
 
 class PostOrderView(ListAPIView):
@@ -103,26 +122,31 @@ class PostLikeAPIView(GenericAPIView):
         user = self.request.user
         post_id = self.kwargs.get("post_id")
         post = Post.objects.get(pk=post_id)
+        post_user = post.user
 
         if post.like_users.filter(pk=user.id).exists():
             post.like_users.remove(user)
+            post.user.liked_num -= 1
+            post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
             bool_like = False
             return Response(
                 {
                 "bool_like": bool_like,
-                "like_num": post.like_num
+                "like_num": post.like_num,
                 },
                 status = status.HTTP_200_OK
             )
         else:
             post.like_users.add(user)
+            post.user.liked_num += 1
+            post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
             bool_like = True
             return Response(
                 {
                 "bool_like": bool_like,
-                "like_num": post.like_num
+                "like_num": post.like_num,
                 },
                 status = status.HTTP_200_OK
             )
@@ -156,7 +180,7 @@ class SubscriptionListCreateView(ListCreateAPIView):
 ###########################마이 페이지###########################################
 class MypageTodayIWroteView(ListAPIView):
     serializer_class = MypageSerializer
-    pagination_class = SentencePagination
+    #pagination_class = SentencePagination
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -178,7 +202,7 @@ def get_dates(request):
 
 class MypageOrderView(ListAPIView):
     serializer_class = MypageSerializer
-    pagination_class = MypagePagination
+    #pagination_class = MypagePagination
 
     def get_queryset(self):
         date = self.kwargs.get("date")
@@ -201,12 +225,14 @@ class MypageOrderView(ListAPIView):
 class MypageUserDetailView(APIView):
     def get(self, request, *args, **kwargs):
         user = self.request.user
-        posts = Post.objects.filter(user_id = user.id).count()
+        posts = Post.objects.filter(user_id = user.id).order_by('-created_at')
+        post_num = posts.count()
         today = datetime.now().date()
         sign_in_days = (today - user.date_joined.date()).days
         data = {
-            "post_num" : posts,
-            "sign_in_days": sign_in_days
+            "post_num" : post_num,
+            "sign_in_days": sign_in_days,
+            "liked_num": user.liked_num
         }
         return Response(data)
 

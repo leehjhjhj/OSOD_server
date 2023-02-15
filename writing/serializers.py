@@ -24,7 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at"]
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at", "unknown"]
 
     def get_bool_like(self, obj):
         request = self.context.get("request")
