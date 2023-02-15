@@ -9,7 +9,9 @@ from .serializers import *
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
-import json
+from django.shortcuts import redirect
+import os
+from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
@@ -44,8 +46,7 @@ BASE_URL = 'http://localhost:8000/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 
-from django.shortcuts import redirect
-import os
+
 
 state = "vyv2dj"
 
@@ -149,9 +150,26 @@ def google_callback(request):
         # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
         return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)     
 
-
-
 class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
+
+
+class CustomPasswordResetView(PasswordResetView):
+    serializer_class = CustomPasswordResetSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data["email"] = request.user.email
+        #return JsonResponse({"dd": f"{data}"})
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        # Return the success message with OK HTTP status
+        return Response(
+            {'detail': ('Password reset e-mail has been sent.')},
+            status=status.HTTP_200_OK,
+        )
+    
