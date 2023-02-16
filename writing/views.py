@@ -77,10 +77,11 @@ class PostListCreateView(ListCreateAPIView):
         sentence_id = self.kwargs.get("sentence_id")
         if self.request.user.is_authenticated:
             user = self.request.user
+            serializer.save(user=user, sentence_id=sentence_id)
         else:
             user = None
             unknown = random_nickname()
-        serializer.save(user=user, sentence_id=sentence_id, unknown=unknown)
+            serializer.save(user=user, sentence_id=sentence_id, unknown=unknown)
 
 
 class PostOrderView(ListAPIView):
@@ -223,16 +224,33 @@ class MypageOrderView(ListAPIView):
         return Response(serializer.data)
     
 class MypageUserDetailView(APIView):
+
     def get(self, request, *args, **kwargs):
         user = self.request.user
         posts = Post.objects.filter(user_id = user.id).order_by('-created_at')
         post_num = posts.count()
         today = datetime.now().date()
-        sign_in_days = (today - user.date_joined.date()).days
+        today_study = False
+        continuous_cnt = 0
+        prev_date = datetime.now().date()
+
+        for post in posts:
+            if post.created_at.date() == today:
+                today_study = True
+            if post.created_at.date() == prev_date:
+                continue
+            if (prev_date - post.created_at.date()).days > 1:
+                break
+            continuous_cnt += 1
+            prev_date = post.created_at.date()
+        if today_study:
+            continuous_cnt += 1
+
         data = {
             "post_num" : post_num,
-            "sign_in_days": sign_in_days,
-            "liked_num": user.liked_num
+            "continuous_cnt": continuous_cnt,
+            "liked_num": user.liked_num,
+            "today_study": today_study
         }
         return Response(data)
 
