@@ -4,14 +4,30 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from rest_framework import status
-import os
+from email.message import EmailMessage
+from django.core.mail import send_mail
+from .models import *
+from writing.models import Subsription, Sentence
 from .serializers import *
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from django.shortcuts import redirect
-import os
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from datetime import datetime, timedelta
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+
+#################################
+def get_day_of_the_week(input_created_at):
+    dateDict = {0: '월요일', 1:'화요일', 2:'수요일', 3:'목요일', 4:'금요일', 5:'토요일', 6:'일요일'}
+    created_at = input_created_at
+    day_of_the_week = dateDict[created_at.weekday()]
+    return day_of_the_week
+
+#################################
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
@@ -185,3 +201,63 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         return Response(
             {'detail': ('Password has been reset with the new password.')},
         )
+
+# def send_email_to_valid_recipients(subject, message, recipient_list):
+#     valid_recipients = []
+#     invalid_recipients = []
+    
+#     for recipient in recipient_list:
+#         try:
+#             validate_email(recipient)
+#             valid_recipients.append(recipient)
+#         except ValidationError:
+#             invalid_recipients.append(recipient)
+    
+#     # 유효하지 않은 이메일 주소 목록을 출력합니다.
+#     if invalid_recipients:
+#         print('Invalid email addresses: {}'.format(', '.join(invalid_recipients)))
+    
+#     # 유효한 이메일 주소 목록에 이메일을 보냅니다.
+#     if valid_recipients:
+#         send_mail(subject=subject, message=message, from_email=None, recipient_list=valid_recipients)
+
+
+class ContactView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        sub_users = User.objects.filter(subscription=True)
+        sub_unknowns = Subsription.objects.all()
+
+        today = datetime.now().date()
+        target_sentence = Sentence.objects.get(
+                                created_at__year=today.year,
+                                created_at__month=today.month,
+                                created_at__day=today.day,
+                                )
+
+        sub_users_list = [sub_user.email for sub_user in sub_users]
+        sub_unknowns_list = [sub_unknown.sub_email for sub_unknown in sub_unknowns]
+        send_list = sub_users_list + sub_unknowns_list
+        send_list = set(send_list)
+        send_list = list(send_list)
+
+        context = {
+            'created_at': target_sentence.created_at,
+            "day_of_the_week": get_day_of_the_week(target_sentence.created_at),
+            'sentence': target_sentence.sentence,
+            'discription': target_sentence.discription,
+            'translate': target_sentence.translate,
+        }
+
+        message = render_to_string('email_template.html', context)
+        subject = f"[OSOD] {get_day_of_the_week(target_sentence.created_at)}의 영작"
+        to = send_list
+        send_mail(
+            subject = subject,
+            message = "",
+            from_email = None,
+            recipient_list = to,
+            html_message = message
+        )
+        return Response(status=201)

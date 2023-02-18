@@ -230,27 +230,27 @@ class MypageUserDetailView(APIView):
         posts = Post.objects.filter(user_id = user.id).order_by('-created_at')
         post_num = posts.count()
         today = datetime.now().date()
-        today_study = False
+        today_study_bool = False
         continuous_cnt = 0
         prev_date = datetime.now().date()
 
         for post in posts:
             if post.created_at.date() == today:
-                today_study = True
+                today_study_bool = True
             if post.created_at.date() == prev_date:
                 continue
             if (prev_date - post.created_at.date()).days > 1:
                 break
             continuous_cnt += 1
             prev_date = post.created_at.date()
-        if today_study:
+        if today_study_bool:
             continuous_cnt += 1
 
         data = {
             "post_num" : post_num,
             "continuous_cnt": continuous_cnt,
             "liked_num": user.liked_num,
-            "today_study": today_study
+            "today_study_bool": today_study_bool
         }
         return Response(data)
 

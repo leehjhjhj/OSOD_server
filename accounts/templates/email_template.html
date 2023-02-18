@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Template</title>
+  </head>
+  <body style="background-color: #cfe2f3; font-family: Arial, sans-serif; color: #0d1a26;">
+    <div style="background-color: #0d1a26; padding: 1rem; color: white;">
+      <h1 style="font-size: 2rem;">[{{ created_at|date:'F j, Y' }}] {{ day_of_the_week }}</h1>
+    </div>
+    <div style="padding: 1rem;">
+      <h2 style="font-size: 1.5rem; margin-top: 0;">{{ sentence }}</h2>
+      <p>{{ discription }}</p>
+      <p>{{ translate }}</p>
+    </div>
+  </body>
+</html>
