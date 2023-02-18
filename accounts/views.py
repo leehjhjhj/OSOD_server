@@ -84,15 +84,8 @@ class ConfirmEmailView(APIView):
 #################################################
 ####################구글##########################
 #################################################
-try:
-    BASE_URL = 'http://localhost:8000/'
-except:
-    BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
-    
+BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
-
-
-
 
 state = "vyv2dj"
 
@@ -174,7 +167,7 @@ def google_callback(request):
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
         data = {'access_token': access_token, 'code': code}
         
-        accept = requests.post("http://localhost:8000/accounts/google/login/finish/", data=data)
+        accept = requests.post("https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/accounts/google/login/finish/", data=data)
         #return JsonResponse({'err_msg': f"{data}"})
         accept_status = accept.status_code
         # 뭔가 중간에 문제가 생기면 에러
