@@ -7,6 +7,7 @@ from dj_rest_auth.views import (
     LoginView, LogoutView, PasswordChangeView,
     PasswordResetView, PasswordResetConfirmView
 )
+from django.views.static import serve
 
 from accounts.views import ConfirmEmailView
 
@@ -33,6 +34,6 @@ urlpatterns = [
     # 유저가 클릭한 이메일(=링크) 확인
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ConfirmEmailView.as_view(), name='account_confirm_email'),
     path('writing/', include('writing.urls')),
-
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 
 ]
