@@ -8,7 +8,7 @@ from dj_rest_auth.views import (
     PasswordResetView, PasswordResetConfirmView
 )
 from django.views.static import serve
-
+from . import settings
 from accounts.views import ConfirmEmailView
 
 urlpatterns = [
