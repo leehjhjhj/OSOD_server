@@ -84,7 +84,11 @@ class ConfirmEmailView(APIView):
 #################################################
 ####################구글##########################
 #################################################
-BASE_URL = 'http://localhost:8000/'
+try:
+    BASE_URL = 'http://localhost:8000/'
+except:
+    BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
+    
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 
