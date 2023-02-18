@@ -27,6 +27,18 @@ def random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for _ in range(length))
 
+@api_view(['GET'])
+def get_today_postcnt(request):
+    today = datetime.now().date()
+    today_postcnt = Post.objects.filter(
+                                created_at__year=today.year,
+                                created_at__month=today.month,
+                                created_at__day=today.day,
+                                ).order_by('-created_at').count()
+    return Response({
+                "today_postcnt": today_postcnt,
+                }, status = status.HTTP_200_OK)
+
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 4

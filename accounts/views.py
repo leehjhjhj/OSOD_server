@@ -19,6 +19,15 @@ from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
+from rest_framework.decorators import api_view
+from json import JSONDecodeError
+from django.http import JsonResponse
+import requests
+from rest_framework import status
+from .models import *
+from allauth.socialaccount.models import SocialAccount 
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter 
+
 
 #################################
 def get_day_of_the_week(input_created_at):
@@ -73,14 +82,6 @@ def google_login(request):
     client_id = "545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com"
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
-from json import JSONDecodeError
-from django.http import JsonResponse
-import requests
-import os
-from rest_framework import status
-from .models import *
-from allauth.socialaccount.models import SocialAccount 
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter 
 
 
 def google_callback(request):
@@ -261,3 +262,17 @@ class ContactView(APIView):
             html_message = message
         )
         return Response(status=201)
+    
+@api_view(['GET'])
+def change_sub(request):
+    user = request.user
+    target = User.objects.get(id=user.id)
+    if target.subscription:
+        target.subscription = False
+    else:
+        target.subscription = True
+    target.save(update_fields=['subscription'])
+
+    return Response({
+        "subscription": user.subscription,
+    },status = status.HTTP_200_OK)
