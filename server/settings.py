@@ -21,6 +21,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app"]
+CSRF_TRUSTED_ORIGINS = ['port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app']
 
 
 # Application definition
