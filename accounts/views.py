@@ -26,8 +26,25 @@ import requests
 from rest_framework import status
 from .models import *
 from allauth.socialaccount.models import SocialAccount 
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter 
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 
+#################################
+from pathlib import Path
+import os, json 
+from django.core.exceptions import ImproperlyConfigured 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
 
 #################################
 def get_day_of_the_week(input_created_at):
@@ -79,7 +96,7 @@ state = "vyv2dj"
 def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email"
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-    client_id = "545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com"
+    client_id = get_secret("client_id")
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 
@@ -87,8 +104,8 @@ def google_login(request):
 def google_callback(request):
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     #client_secret = os.environ.get("SOCIAL_AUTH_GOOGLE_SECRET")
-    client_id = "545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com"
-    client_secret = "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"
+    client_id = get_secret("client_id")
+    client_secret = get_secret("client_secret")
     code = request.GET.get('code')
 
     # 1. 받은 코드로 구글에 access token 요청

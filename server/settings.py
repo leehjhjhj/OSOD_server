@@ -1,14 +1,21 @@
 from pathlib import Path
+import os, json 
+from django.core.exceptions import ImproperlyConfigured 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
+    secrets = json.loads(f.read())
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bg_l%0oagu@%3)1eez_6ii8f=+2!a!^8b#$jc(h#lkhkq8y4a^'
+def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+    
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -183,7 +190,7 @@ EMAIL_PORT = '587' # gmail과 통신하는 포트
  
 EMAIL_HOST_USER = 'officialosod@gmail.com' # 발신할 이메일
 
-EMAIL_HOST_PASSWORD = 'pvgaflpzzuhschjh' # 발신할 메일의 비밀번호
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD") # 발신할 메일의 비밀번호
 
 EMAIL_USE_TLS = True # TLS 보안 방법
 
@@ -206,8 +213,8 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = "OSOD "
 
 #####################소셜로그인 관련###################################
 
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = "545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com"
-SOCIAL_AUTH_GOOGLE_SECRET = "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"
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = get_secret("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_SECRET = get_secret("SOCIAL_AUTH_GOOGLE_SECRET")
 STATE = "vyv2dj"
 
 SITE_ID = 1
