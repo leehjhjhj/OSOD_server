@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #         error_msg = "Set the {} environment variable".format(setting)
 #         raise ImproperlyConfigured(error_msg)
     
-#SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
