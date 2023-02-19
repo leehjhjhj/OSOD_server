@@ -14,6 +14,8 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 import random
 import string
+from google.cloud import translate_v2 as translate
+import os
 #####################################################
 
 def random_nickname():
@@ -274,3 +276,12 @@ class WhatILikeView(ListAPIView):
         return user.like.all().order_by('-created_at')
 
 #######################################################################
+########번역 관련########
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
+
+class TranslateView(APIView):
+    def post(self, request):
+        text = request.data.get('text')
+        client = translate.Client()
+        result = client.translate(text, target_language='ko')
+        return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)

@@ -136,7 +136,7 @@ TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -226,3 +226,4 @@ SOCIAL_AUTH_GOOGLE_SECRET = get_secret("SOCIAL_AUTH_GOOGLE_SECRET")
 STATE = "vyv2dj"
 
 SITE_ID = 1
+

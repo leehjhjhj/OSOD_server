@@ -35,5 +35,4 @@ urlpatterns = [
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ConfirmEmailView.as_view(), name='account_confirm_email'),
     path('writing/', include('writing.urls')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
-
 ]

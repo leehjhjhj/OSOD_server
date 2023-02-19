@@ -275,7 +275,7 @@ class ContactView(APIView):
             recipient_list = to,
             html_message = message
         )
-        return Response(status=201)
+        return Response(status.HTTP_201_CREATED)
     
 @api_view(['GET'])
 def change_sub(request):
