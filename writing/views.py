@@ -16,6 +16,7 @@ import random
 import string
 from google.cloud import translate_v2 as translate
 import os
+from rest_framework.permissions import IsAuthenticated
 #####################################################
 
 def random_nickname():
@@ -126,9 +127,10 @@ class PostOrderView(ListAPIView):
 
 class PostRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Post.objects.all()
+        return Post.objects.filter(user=self.request.user)
 
 class PostLikeAPIView(GenericAPIView):
     serializer_class = LikeUsersSerializer
@@ -277,7 +279,7 @@ class WhatILikeView(ListAPIView):
 
 #######################################################################
 ########번역 관련########
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/server/innate-vigil-377910-ff58e0aebf0f.json'
 
 class TranslateView(APIView):
     def post(self, request):
