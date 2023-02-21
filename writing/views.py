@@ -17,6 +17,8 @@ import string
 from google.cloud import translate_v2 as translate
 import os
 from rest_framework.permissions import IsAuthenticated
+import requests
+from google.oauth2 import service_account
 #####################################################
 
 def random_nickname():
@@ -279,7 +281,7 @@ class WhatILikeView(ListAPIView):
 
 #######################################################################
 ########번역 관련########
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/innate-vigil-377910-ff58e0aebf0f.json'
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'server/innate-vigil-377910-ff58e0aebf0f.json'
 
 class TranslateView(APIView):
     def post(self, request):
@@ -287,3 +289,31 @@ class TranslateView(APIView):
         client = translate.Client()
         result = client.translate(text, target_language='ko')
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
+
+
+class TextToSpeechAPI(APIView):
+    def post(self, request):
+        text = request.data.get('text')
+        api_key = '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'
+
+        url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+        }
+        data = {
+            'input': {
+                'text': text
+            },
+            'voice': {
+                'languageCode': 'en',
+                'ssmlGender': 'FEMALE'
+            },
+            'audioConfig': {
+                'audioEncoding': 'MP3'
+            }
+        }
+        response = requests.post(url, headers=headers, json=data)
+        return Response(response.content)
+    
+    
