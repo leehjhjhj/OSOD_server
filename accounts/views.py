@@ -19,14 +19,36 @@ from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from json import JSONDecodeError
 from django.http import JsonResponse
 import requests
 from rest_framework import status
 from .models import *
 from allauth.socialaccount.models import SocialAccount 
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from rest_framework_simplejwt.authentication import JWTAuthentication
+#################################
+
+
+    
+# def get_user_from_token(request):
+#     auth_header = get_authorization_header(request)
+#     if not auth_header:
+#         # Authorization 헤더가 없는 경우
+#         raise AuthenticationFailed('Authorization 헤더가 필요합니다.')
+
+#     auth_token = auth_header.decode('utf-8').split(' ')[1]
+#     if not auth_token:
+#         # Authorization 헤더에 토큰이 없는 경우
+#         raise AuthenticationFailed('유효한 토큰이 필요합니다.')
+
+#     try:
+#         payload = jwt_decode_handler(auth_token)
+#     except Exception:
+#         # 토큰 디코딩 실패
+#         raise AuthenticationFailed('유효한 토큰이 아닙니다.')
+
+#     return payload.get('user_id', None)
 
 #################################
 from pathlib import Path
@@ -190,19 +212,19 @@ class GoogleLogin(SocialLoginView):
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
 
-    def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data["email"] = request.user.email
-        #return JsonResponse({"dd": f"{data}"})
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+    # def post(self, request, *args, **kwargs):
+    #     #data = request.data.copy()
+    #     #data["email"] = request.user.email
+    #     #return JsonResponse({"dd": f"{data}"})
+    #     serializer = self.get_serializer(data=data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
         
-        # Return the success message with OK HTTP status
-        return Response(
-            {'detail': ('Password reset e-mail has been sent.')},
-            status=status.HTTP_200_OK,
-        )
+    #     # Return the success message with OK HTTP status
+    #     return Response(
+    #         {'detail': ('Password reset e-mail has been sent.')},
+    #         status=status.HTTP_200_OK,
+    #     )
     
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
@@ -278,6 +300,7 @@ class ContactView(APIView):
         return Response(status.HTTP_201_CREATED)
     
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 def change_sub(request):
     user = request.user
     target = User.objects.get(id=user.id)

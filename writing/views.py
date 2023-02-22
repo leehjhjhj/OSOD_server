@@ -20,6 +20,8 @@ from rest_framework.permissions import IsAuthenticated
 import requests
 from google.oauth2 import service_account
 from google.cloud import texttospeech
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 #####################################################
 
 def random_nickname():
@@ -90,6 +92,7 @@ class SentenceRetrieveUpdateView(RetrieveUpdateAPIView):
 class PostListCreateView(ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    authentication_classes = [JWTAuthentication]
 
     def perform_create(self, serializer):
         sentence_id = self.kwargs.get("sentence_id")
@@ -105,6 +108,7 @@ class PostListCreateView(ListCreateAPIView):
 class PostOrderView(ListAPIView):
     serializer_class = PostSerializer
     pagination_class = PostPageNumberPagination
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
         #self.cmd = self.request.META.get('HTTP_CMD')
@@ -130,6 +134,7 @@ class PostOrderView(ListAPIView):
 
 class PostRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -137,6 +142,7 @@ class PostRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 class PostLikeAPIView(GenericAPIView):
     serializer_class = LikeUsersSerializer
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -186,7 +192,8 @@ class MainSentenceView(ListAPIView):
 class SubscriptionListCreateView(ListCreateAPIView):
     queryset = Subsription.objects.all()
     serializer_class = SubscriptionSerializer
-
+    authentication_classes = [JWTAuthentication]
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -200,6 +207,8 @@ class SubscriptionListCreateView(ListCreateAPIView):
 ###########################마이 페이지###########################################
 class MypageTodayIWroteView(ListAPIView):
     serializer_class = MypageSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     #pagination_class = SentencePagination
 
     def get_queryset(self):
@@ -222,6 +231,8 @@ def get_dates(request):
 
 class MypageOrderView(ListAPIView):
     serializer_class = MypageSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     #pagination_class = MypagePagination
 
     def get_queryset(self):
@@ -243,6 +254,8 @@ class MypageOrderView(ListAPIView):
         return Response(serializer.data)
     
 class MypageUserDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         user = self.request.user
@@ -275,6 +288,8 @@ class MypageUserDetailView(APIView):
 
 class WhatILikeView(ListAPIView):
     serializer_class = PostSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -282,16 +297,14 @@ class WhatILikeView(ListAPIView):
 
 #######################################################################
 ########번역 관련########
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'server/innate-vigil-377910-ff58e0aebf0f.json'
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'server/innate-vigil-377910-ff58e0aebf0f.json'
+#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
 class TranslateView(APIView):
     def post(self, request):
         text = request.data.get('text')
         client = translate.Client()
         result = client.translate(text, target_language='ko')
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
-
-
 
 from django.http import StreamingHttpResponse
 from django.utils.encoding import smart_str
@@ -335,7 +348,7 @@ class TextToSpeechServerdownAPI(APIView):
         response = StreamingHttpResponse(audio_content, content_type='audio/mpeg')
         response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
         return response
-
+#####################################################################################################################
 
 
 
