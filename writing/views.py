@@ -19,6 +19,7 @@ import os
 from rest_framework.permissions import IsAuthenticated
 import requests
 from google.oauth2 import service_account
+from google.cloud import texttospeech
 #####################################################
 
 def random_nickname():
@@ -282,7 +283,7 @@ class WhatILikeView(ListAPIView):
 #######################################################################
 ########번역 관련########
 #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'server/innate-vigil-377910-ff58e0aebf0f.json'
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
 class TranslateView(APIView):
     def post(self, request):
         text = request.data.get('text')
@@ -291,29 +292,55 @@ class TranslateView(APIView):
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
 
 
+
+from django.http import StreamingHttpResponse
+from django.utils.encoding import smart_str
+
+import io
+
 class TextToSpeechAPI(APIView):
     def post(self, request):
         text = request.data.get('text')
-        api_key = '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'
+        client = texttospeech.TextToSpeechClient()
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+        voice = texttospeech.VoiceSelectionParams(
+            language_code='en-US', ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+        )
+        audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
+        response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+        audio_content = io.BytesIO(response.audio_content)
+        response = StreamingHttpResponse(audio_content, content_type='audio/mpeg')
+        response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
+        return response
+    
+#다운해서 확인하는용#
+class TextToSpeechServerdownAPI(APIView):
+    def post(self, request):
+        text = request.data.get('text')
+        client = texttospeech.TextToSpeechClient()
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+        voice = texttospeech.VoiceSelectionParams(
+            language_code='en-US', ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+        )
+        audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
+        response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
+        audio_content = io.BytesIO(response.audio_content)
+        
+        # 파일로 저장
+        with open('audio.mp3', 'wb') as f:
+            f.write(audio_content.getbuffer())
+        
+        # StreamingHttpResponse로 클라이언트에게 반환
+        audio_content.seek(0)
+        response = StreamingHttpResponse(audio_content, content_type='audio/mpeg')
+        response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
+        return response
 
-        url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {api_key}',
-        }
-        data = {
-            'input': {
-                'text': text
-            },
-            'voice': {
-                'languageCode': 'en',
-                'ssmlGender': 'FEMALE'
-            },
-            'audioConfig': {
-                'audioEncoding': 'MP3'
-            }
-        }
-        response = requests.post(url, headers=headers, json=data)
-        return Response(response.content)
-    
-    
+
+
+
+
+
+
+
+
