@@ -9,13 +9,12 @@ from dj_rest_auth.views import (
 )
 from django.views.static import serve
 from . import settings
-from accounts.views import ConfirmEmailView
-
+from accounts.views import ConfirmEmailView, CustomLoginView
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 로그인
-    path('login/', LoginView.as_view(), name='rest_login'),
+    path('login/', CustomLoginView.as_view(), name='rest_login'),
     path('logout/', LogoutView.as_view(), name='rest_logout'),
     path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', CustomPasswordResetView.as_view(), name='reset'),

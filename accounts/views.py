@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from .models import *
 from writing.models import Subsription, Sentence
 from .serializers import *
-from dj_rest_auth.registration.views import SocialLoginView
+from dj_rest_auth.registration.views import SocialLoginView, LoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from django.shortcuts import redirect
@@ -27,33 +27,10 @@ from rest_framework import status
 from .models import *
 from allauth.socialaccount.models import SocialAccount 
 from rest_framework_simplejwt.authentication import JWTAuthentication
-#################################
-
-
-    
-# def get_user_from_token(request):
-#     auth_header = get_authorization_header(request)
-#     if not auth_header:
-#         # Authorization 헤더가 없는 경우
-#         raise AuthenticationFailed('Authorization 헤더가 필요합니다.')
-
-#     auth_token = auth_header.decode('utf-8').split(' ')[1]
-#     if not auth_token:
-#         # Authorization 헤더에 토큰이 없는 경우
-#         raise AuthenticationFailed('유효한 토큰이 필요합니다.')
-
-#     try:
-#         payload = jwt_decode_handler(auth_token)
-#     except Exception:
-#         # 토큰 디코딩 실패
-#         raise AuthenticationFailed('유효한 토큰이 아닙니다.')
-
-#     return payload.get('user_id', None)
-
-#################################
 from pathlib import Path
 import os, json 
 from django.core.exceptions import ImproperlyConfigured 
+from django.utils import timezone
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,6 +53,57 @@ def get_day_of_the_week(input_created_at):
     return day_of_the_week
 
 #################################
+class CustomLoginView(LoginView):
+    def get_response(self):
+        serializer_class = self.get_response_serializer()
+    
+        if getattr(settings, 'REST_USE_JWT', False):
+            from rest_framework_simplejwt.settings import (
+                api_settings as jwt_settings,
+            )
+            access_token_expiration = (timezone.now() + jwt_settings.ACCESS_TOKEN_LIFETIME)
+            refresh_token_expiration = (timezone.now() + jwt_settings.REFRESH_TOKEN_LIFETIME)
+            return_expiration_times = getattr(settings, 'JWT_AUTH_RETURN_EXPIRATION', False)
+            auth_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', False)
+
+            data = {
+                'user': self.user,
+                'access_token': self.access_token,
+            }
+
+            if not auth_httponly:
+                data['refresh_token'] = self.refresh_token
+            else:
+                # Wasnt sure if the serializer needed this
+                data['refresh_token'] = ""
+
+            if return_expiration_times:
+                data['access_token_expiration'] = access_token_expiration
+                data['refresh_token_expiration'] = refresh_token_expiration
+
+            serializer = serializer_class(
+                instance=data,
+                context=self.get_serializer_context(),
+            )
+        elif self.token:
+            serializer = serializer_class(
+                instance=self.token,
+                context=self.get_serializer_context(),
+            )
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+
+        if self.user.is_first:
+            self.user.is_first = False
+            self.user.save(update_fields=['is_first'])
+    
+        if getattr(settings, 'REST_USE_JWT', False):
+            from dj_rest_auth.jwt_auth import set_jwt_cookies
+            set_jwt_cookies(response, self.access_token, self.refresh_token)
+        return response
+
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
