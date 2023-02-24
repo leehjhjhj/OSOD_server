@@ -341,3 +341,19 @@ def change_sub(request):
     return Response({
         "subscription": user.subscription,
     },status = status.HTTP_200_OK)
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+def make_nickname(request):
+    try:
+        user = request.user
+        text = request.data.get('text')
+        user.nickname = text
+        user.save(update_fields=['nickname'])
+        return Response({
+            "nickname": user.nickname,
+        },status = status.HTTP_200_OK)
+    except:
+        return Response({
+            "detail": "중복이거나 잘못된 닉네임입니다.",
+        },status = status.HTTP_400_BAD_REQUEST)
