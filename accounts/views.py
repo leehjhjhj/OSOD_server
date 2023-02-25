@@ -23,7 +23,7 @@ from rest_framework.decorators import api_view, authentication_classes
 from json import JSONDecodeError
 from django.http import JsonResponse
 import requests
-from rest_framework import status
+from rest_framework import generics, status
 from .models import *
 from allauth.socialaccount.models import SocialAccount 
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -31,6 +31,9 @@ from pathlib import Path
 import os, json 
 from django.core.exceptions import ImproperlyConfigured 
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
+
+User = get_user_model()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -222,8 +225,9 @@ def google_callback(request):
         # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
         data = {'access_token': access_token, 'code': code}
         
-        accept = requests.post("https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/accounts/google/login/finish/", data=data)
-        #return JsonResponse({'err_msg': f"{data}"})
+        accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
+        
+        #return JsonResponse({'err_msg': f"{accept.reason}"})
         accept_status = accept.status_code
         # 뭔가 중간에 문제가 생기면 에러
         if accept_status != 200:
@@ -234,7 +238,7 @@ def google_callback(request):
 
     except SocialAccount.DoesNotExist:
         # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
-        return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)     
+        return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)       
 
 class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
