@@ -131,6 +131,7 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
+    
 #################################################
 ####################구글##########################
 #################################################
@@ -144,6 +145,7 @@ def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email"
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     client_id = get_secret("client_id")
+    
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 
@@ -154,7 +156,6 @@ def google_callback(request):
     client_id = get_secret("client_id")
     client_secret = get_secret("client_secret")
     code = request.GET.get('code')
-
     # 1. 받은 코드로 구글에 access token 요청
     token_req = requests.post(f"https://oauth2.googleapis.com/token?client_id={client_id}&client_secret={client_secret}&code={code}&grant_type=authorization_code&redirect_uri={GOOGLE_CALLBACK_URI}&state={state}")
     
@@ -204,6 +205,10 @@ def google_callback(request):
         accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
         
         accept_status = accept.status_code
+
+        if user.is_first:
+            user.is_first = False
+            user.save(update_fields=['is_first'])
         
         # 뭔가 중간에 문제가 생기면 에러
         if accept_status != 200:
