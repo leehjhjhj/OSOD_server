@@ -233,6 +233,11 @@ def google_callback(request):
         if accept_status != 200:
             return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
         accept_json = accept.json()
+
+        if user.is_first:
+            user.is_first = False
+            user.save(update_fields=['is_first'])
+        
         #accept_json.pop('user', None)
         return JsonResponse(accept_json)
 
