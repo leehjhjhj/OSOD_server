@@ -203,15 +203,15 @@ def google_callback(request):
         if social_user.provider != 'google':
             return JsonResponse({'err_msg': 'no matching social type'}, status=status.HTTP_400_BAD_REQUEST)
         
+        if user.is_first:
+            user.is_first = False
+            user.save(update_fields=['is_first'])
+
         # 이미 Google로 제대로 가입된 유저 => 로그인 & 해당 우저의 jwt 발급
         data = {'access_token': access_token, 'code': code}
         accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
         
         accept_status = accept.status_code
-
-        if user.is_first:
-            user.is_first = False
-            user.save(update_fields=['is_first'])
         
         # 뭔가 중간에 문제가 생기면 에러
         if accept_status != 200:
@@ -233,10 +233,6 @@ def google_callback(request):
         if accept_status != 200:
             return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
         accept_json = accept.json()
-
-        if user.is_first:
-            user.is_first = False
-            user.save(update_fields=['is_first'])
         
         #accept_json.pop('user', None)
         return JsonResponse(accept_json)
