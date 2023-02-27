@@ -249,7 +249,7 @@ class GoogleLogin(SocialLoginView):
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
-
+    
     # def post(self, request, *args, **kwargs):
     #     #data = request.data.copy()
     #     #data["email"] = request.user.email

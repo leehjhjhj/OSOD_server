@@ -199,7 +199,6 @@ REST_AUTH_SERIALIZERS = {
 
 
 #####################이메일 관련###################################
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com' # 메일 호스트 서버

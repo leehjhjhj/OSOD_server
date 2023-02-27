@@ -114,6 +114,7 @@ class PostOrderView(ListAPIView):
         #self.cmd = self.request.META.get('HTTP_CMD')
         cmd = self.kwargs.get("cmd")
         sentence_id = self.kwargs.get("sentence_id")
+        page = self.kwargs.get("page")
         user_id = self.request.user.id
         if cmd == "latest":
             return Post.objects.filter(sentence_id=sentence_id).order_by('-created_at')
@@ -121,15 +122,6 @@ class PostOrderView(ListAPIView):
             return Post.objects.filter(sentence_id=sentence_id).order_by('-like_num')
         elif cmd == "my":
             return Post.objects.filter(sentence_id=sentence_id, user_id=user_id).order_by('-created_at')
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class PostRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):

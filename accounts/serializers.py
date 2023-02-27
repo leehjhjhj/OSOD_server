@@ -104,4 +104,4 @@ class CustomPasswordChangeSerializer(serializers.Serializer):
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     email = serializers.EmailField()
-    
+
