@@ -49,7 +49,7 @@ def get_today_postcnt(request):
 
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
-    page_size = 4
+    page_size = 5
 
     def get_paginated_response(self, data):
         return Response(OrderedDict([

@@ -105,3 +105,32 @@ class CustomPasswordChangeSerializer(serializers.Serializer):
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     email = serializers.EmailField()
 
+    def get_email_options(self):
+        return {
+            'html_email_template_name': 'password_reset_confirm.html',
+        }
+
+
+
+
+    # def save(self):
+    #     if 'allauth' in settings.INSTALLED_APPS:
+    #         from allauth.account.forms import default_token_generator
+    #     else:
+    #         from django.contrib.auth.tokens import default_token_generator
+
+    #     request = self.context.get('request')
+    #     # Set some values to trigger the send_email method.
+    #     opts = {
+    #         'use_https': request.is_secure(),
+    #         'from_email': getattr(settings, 'DEFAULT_FROM_EMAIL'),
+    #         'request': request,
+    #         'html_email_template_name': 'password_reset_confirm.html',
+    #         'token_generator': default_token_generator,
+    #     }
+
+    #     opts.update(self.get_email_options())
+    #     self.reset_form.save(**opts)
+
+
+

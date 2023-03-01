@@ -81,7 +81,7 @@ ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'server/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -194,8 +194,8 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserDetailSerializer',
     'PASSWORD_CHANGE_SERIALIZER': 'accounts.serializers.CustomPasswordChangeSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer',
 }
-
 
 
 #####################이메일 관련###################################
@@ -235,4 +235,4 @@ SOCIAL_AUTH_GOOGLE_SECRET = get_secret("SOCIAL_AUTH_GOOGLE_SECRET")
 STATE = "vyv2dj"
 
 SITE_ID = 1
-
+AUTH_USER_MODEL = 'accounts.User'
