@@ -144,8 +144,9 @@ class PostLikeAPIView(GenericAPIView):
 
         if post.like_users.filter(pk=user.id).exists():
             post.like_users.remove(user)
-            post.user.liked_num -= 1
-            post_user.save(update_fields=['liked_num'])
+            if post.user:
+                post.user.liked_num -= 1
+                post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
             bool_like = False
             return Response(
@@ -157,8 +158,9 @@ class PostLikeAPIView(GenericAPIView):
             )
         else:
             post.like_users.add(user)
-            post.user.liked_num += 1
-            post_user.save(update_fields=['liked_num'])
+            if post.user:
+                post.user.liked_num += 1
+                post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
             bool_like = True
             return Response(

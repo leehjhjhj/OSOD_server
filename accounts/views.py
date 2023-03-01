@@ -14,6 +14,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from django.shortcuts import redirect
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
+from dj_rest_auth.registration.views import VerifyEmailView
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
@@ -134,7 +135,8 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
-    
+# class CustomVerifyEmailView(VerifyEmailView):
+
 #################################################
 ####################구글##########################
 #################################################
