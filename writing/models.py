@@ -7,6 +7,7 @@ class Sentence(models.Model):
     created_at = models.DateTimeField(null=True)
     is_valid = models.BooleanField(default=False, null=True)
     translate = models.CharField(max_length=200, null=True)
+    source = models.CharField(max_length=200, null=True)
 
 
 class Post(models.Model):
