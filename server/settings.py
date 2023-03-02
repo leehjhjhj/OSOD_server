@@ -21,7 +21,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app']
+CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
