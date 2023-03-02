@@ -168,19 +168,18 @@ state = "vyv2dj"
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 # 구글 로그인
-@method_decorator(csrf_exempt)
+
 def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email"
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     client_id = get_secret("client_id")
+
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 
-@method_decorator(csrf_exempt)
 def google_callback(request):
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     #client_secret = os.environ.get("SOCIAL_AUTH_GOOGLE_SECRET")
-    return JsonResponse({"확인용": "error?"})
     client_id = get_secret("client_id")
     client_secret = get_secret("client_secret")
     code = request.GET.get('code')
