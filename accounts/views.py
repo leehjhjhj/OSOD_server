@@ -388,13 +388,16 @@ def change_sub(request):
 def make_nickname(request):
     try:
         user = request.user
-        text = request.data.get('text')
-        user.nickname = text
-        user.save(update_fields=['nickname'])
+        get_nick = request.data.get('nickname')
+        get_name = request.data.get('name')
+        user.nickname = get_nick
+        user.name = get_name
+        user.save(update_fields=['nickname', 'name'])
         return Response({
             "nickname": user.nickname,
+            'name': user.name
         },status = status.HTTP_200_OK)
     except:
         return Response({
-            "detail": "중복이거나 잘못된 닉네임입니다.",
+            "detail": "중복이거나 형식이 잘못됐습니다.",
         },status = status.HTTP_400_BAD_REQUEST)
