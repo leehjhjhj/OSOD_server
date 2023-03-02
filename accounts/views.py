@@ -14,7 +14,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from django.shortcuts import redirect
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
-from dj_rest_auth.registration.views import VerifyEmailView
+from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
@@ -33,7 +33,8 @@ import os, json
 from django.core.exceptions import ImproperlyConfigured 
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
-
+from dj_rest_auth.registration.serializers import VerifyEmailSerializer
+from rest_framework.exceptions import MethodNotAllowed
 User = get_user_model()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -109,7 +110,7 @@ class CustomLoginView(LoginView):
         return response
 
 
-class ConfirmEmailView(APIView):
+class ReceiveConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
@@ -135,7 +136,27 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
-# class CustomVerifyEmailView(VerifyEmailView):
+    
+class CustomConfirmEmailView(ConfirmEmailView):
+    pass
+
+class CustomVerifyEmailView(APIView, CustomConfirmEmailView):
+    permission_classes = (AllowAny,)
+    allowed_methods = ('POST', 'OPTIONS', 'HEAD')
+
+    def get_serializer(self, *args, **kwargs):
+        return VerifyEmailSerializer(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        raise MethodNotAllowed('GET')
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.kwargs['key'] = serializer.validated_data['key']
+        confirmation = self.get_object()
+        confirmation.confirm(self.request)
+        return Response({'detail': ('ok')}, status=status.HTTP_200_OK)
 
 #################################################
 ####################구글##########################

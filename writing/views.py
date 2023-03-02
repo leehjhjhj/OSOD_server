@@ -148,6 +148,7 @@ class PostLikeAPIView(GenericAPIView):
                 post.user.liked_num -= 1
                 post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
+            post.save(update_fields=['like_num'])
             bool_like = False
             return Response(
                 {
@@ -162,6 +163,7 @@ class PostLikeAPIView(GenericAPIView):
                 post.user.liked_num += 1
                 post_user.save(update_fields=['liked_num'])
             post.like_num = post.like_users.count()
+            post.save(update_fields=['like_num'])
             bool_like = True
             return Response(
                 {

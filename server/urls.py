@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from accounts.views import CustomPasswordResetView, CustomPasswordResetConfirmView
+from accounts.views import CustomPasswordResetView, CustomPasswordResetConfirmView, CustomVerifyEmailView, ReceiveConfirmEmailView
 # urls.py
 from dj_rest_auth.registration.views import VerifyEmailView, RegisterView
 from dj_rest_auth.views import (
@@ -29,9 +29,9 @@ urlpatterns = [
     path('dj/', include('dj_rest_auth.urls')),
 
     # 유효한 이메일이 유저에게 전달
-    re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+    re_path(r'^account-confirm-email/$', CustomVerifyEmailView.as_view(), name='account_email_verification_sent'),
     # 유저가 클릭한 이메일(=링크) 확인
-    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ConfirmEmailView.as_view(), name='account_confirm_email'),
+    re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', ReceiveConfirmEmailView.as_view(), name='account_confirm_email'),
     path('writing/', include('writing.urls')),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ]
