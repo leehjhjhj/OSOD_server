@@ -165,17 +165,19 @@ BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
 
 state = "vyv2dj"
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 # 구글 로그인
+@method_decorator(csrf_exempt)
 def google_login(request):
     scope = "https://www.googleapis.com/auth/userinfo.email"
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     client_id = get_secret("client_id")
-    
+    #return JsonResponse({"확인용": "error?"})
     return redirect(f"https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&response_type=code&redirect_uri={GOOGLE_CALLBACK_URI}&scope={scope}")
 
 
-
+@method_decorator(csrf_exempt)
 def google_callback(request):
     #client_id = os.environ.get("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
     #client_secret = os.environ.get("SOCIAL_AUTH_GOOGLE_SECRET")
@@ -265,6 +267,7 @@ def google_callback(request):
         return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)       
 
 class GoogleLogin(SocialLoginView):
+    method_decorator = csrf_exempt
     adapter_class = google_view.GoogleOAuth2Adapter
     callback_url = GOOGLE_CALLBACK_URI
     client_class = OAuth2Client
