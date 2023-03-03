@@ -274,10 +274,10 @@ class GoogleLogin(SocialLoginView):
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
     html_email_template_name = 'password_reset_confirm.html'
-    extra_email_context = {
-        'site_name': 'OSOD',
-        'password_reset_confirm_url': 'http://127.0.0.1:8000/password/reset/confirm/uid={{ uid }}&token={{ token }}/',
-    }
+    # extra_email_context = {
+    #     'site_name': 'OSOD',
+    #     'password_reset_confirm_url': 'http://127.0.0.1:8000/password/reset/confirm/uid={{ uid }}&token={{ token }}/',
+    # }
     # email_template_name = 'password_reset_confirm.html'
     # extra_email_context = {
     #     'site_name': 'OSOD',
