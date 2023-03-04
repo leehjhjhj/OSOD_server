@@ -297,7 +297,6 @@ class WhatILikeView(ListAPIView):
 #######################################################################
 ########번역 관련########
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'server/innate-vigil-377910-ff58e0aebf0f.json'
-#os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
 class TranslateView(APIView):
     def post(self, request):
         text = request.data.get('text')
@@ -306,7 +305,6 @@ class TranslateView(APIView):
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
 
 from django.http import StreamingHttpResponse
-from django.utils.encoding import smart_str
 
 import io
 
