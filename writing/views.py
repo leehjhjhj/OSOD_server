@@ -296,7 +296,7 @@ class WhatILikeView(ListAPIView):
 
 #######################################################################
 ########번역 관련########
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'app/innate-vigil-377910-ff58e0aebf0f.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/innate-vigil-377910-ff58e0aebf0f.json'
 #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
 class TranslateView(APIView):
     def post(self, request):
