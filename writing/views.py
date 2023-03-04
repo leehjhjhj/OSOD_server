@@ -21,6 +21,7 @@ import requests
 from google.oauth2 import service_account
 from google.cloud import texttospeech
 from rest_framework_simplejwt.authentication import JWTAuthentication
+import openai
 
 #####################################################
 
@@ -348,8 +349,20 @@ class TextToSpeechServerdownAPI(APIView):
         return response
 #####################################################################################################################
 
-
-
+class GrammarCheckView(APIView):
+    def post(self, request):
+        openai.api_key = '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'
+        text = request.data.get('text')
+        response = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=f"Check this sentence'{text}' grammer and If nothing is wrong, tell me 'Perfect'. Else correct this to standard English and '수정된 문장입니다: ', do not said 'false' ",
+            temperature=0,
+            max_tokens=60,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0
+        )
+        return Response({'response': response.choices[0].text.strip()}, status=status.HTTP_200_OK)
 
 
 

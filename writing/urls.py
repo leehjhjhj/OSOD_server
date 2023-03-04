@@ -19,6 +19,7 @@ urlpatterns = [
     path('translate/', views.TranslateView.as_view()),
     path('text-to-speech/', views.TextToSpeechAPI.as_view()),
     path('text-to-speech-server/', views.TextToSpeechServerdownAPI.as_view()),
+    path('grammar-check/', views.GrammarCheckView.as_view(), name='grammar'),
     ##마이페이지 관련##
     path('mypage/today/', views.MypageTodayIWroteView.as_view(), name='today'),
     path('mypage/get_dates/', views.get_dates, name='get_dates'),
