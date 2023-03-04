@@ -319,7 +319,7 @@ class GetGoogleAccessView(APIView):
 
             # 이미 Google로 제대로 가입된 유저 => 로그인 & 해당 우저의 jwt 발급
             data = {'access_token': access_token}
-            accept = requests.post(f"{BASE_URL}google/login-test/", data=data)
+            accept = requests.post(f"{BASE_URL}accounts/google/login-test/", data=data)
             
             accept_status = accept.status_code
             
@@ -335,7 +335,7 @@ class GetGoogleAccessView(APIView):
             # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
             data = {'access_token': access_token}
             
-            accept = requests.post(f"{BASE_URL}google/login-test/", data=data)
+            accept = requests.post(f"{BASE_URL}accounts/google/login-test/", data=data)
             
             #return JsonResponse({'err_msg': f"{accept.reason}"})
             accept_status = accept.status_code
