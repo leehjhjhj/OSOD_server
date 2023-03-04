@@ -12,4 +12,5 @@ urlpatterns = [
     path('change-sub/', change_sub, name='change_sub'),
     path('make-nickname/', make_nickname, name='make_nickname'),
     path('google/test/', GetGoogleAccessView.as_view(), name='google_test'),
+    path('google/login-test/', GoogleLogin.as_view(), name='google_login'),
 ]

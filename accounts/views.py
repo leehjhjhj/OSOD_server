@@ -269,25 +269,23 @@ class GetGoogleAccessView(APIView):
     def post(self, request, *args, **kwargs):
         client_id = get_secret("client_id")
         client_secret = get_secret("client_secret")
-        code = request.data.get("code")
-        
-        # Google API에 access token을 요청하는 URL 생성
-        url = "https://oauth2.googleapis.com/token"
-        data = {
-            "code": code,
-            "client_id": client_id,
-            "client_secret": client_secret,
-            "redirect_uri": GOOGLE_CALLBACK_URI,
-            "grant_type": "authorization_code",
-        }
+        access_token = request.data.get("access_token")
+        # # Google API에 access token을 요청하는 URL 생성
+        # url = "https://oauth2.googleapis.com/token"
+        # data = {
+        #     "code": code,
+        #     "client_id": client_id,
+        #     "client_secret": client_secret,
+        #     "redirect_uri": GOOGLE_CALLBACK_URI,
+        #     "grant_type": "authorization_code",
+        # }
 
-        # Google API에 access token을 요청
-        response = requests.post(url, data=data)
+        # # Google API에 access token을 요청
+        # response = requests.post(url, data=data)
 
-        # 응답에서 access token 추출
-        response_data = response.json()
-        return Response({"dd": f"{response_data}"})
-        access_token = response_data.get("access_token")
+        # # 응답에서 access token 추출
+        # response_data = response.json()
+        # return Response({"dd": f"{response_data}"})
         
         email_req = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
         email_req_status = email_req.status_code
@@ -320,8 +318,8 @@ class GetGoogleAccessView(APIView):
                 user.save(update_fields=['is_first'])
 
             # 이미 Google로 제대로 가입된 유저 => 로그인 & 해당 우저의 jwt 발급
-            data = {'access_token': access_token, 'code': code}
-            accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
+            data = {'access_token': access_token}
+            accept = requests.post(f"{BASE_URL}google/login-test/", data=data)
             
             accept_status = accept.status_code
             
@@ -335,9 +333,9 @@ class GetGoogleAccessView(APIView):
         
         except User.DoesNotExist:
             # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
-            data = {'access_token': access_token, 'code': code}
+            data = {'access_token': access_token}
             
-            accept = requests.post(f"{BASE_URL}accounts/google/login/finish/", data=data)
+            accept = requests.post(f"{BASE_URL}google/login-test/", data=data)
             
             #return JsonResponse({'err_msg': f"{accept.reason}"})
             accept_status = accept.status_code
@@ -355,8 +353,7 @@ class GetGoogleAccessView(APIView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
-    callback_url = GOOGLE_CALLBACK_URI
-    client_class = OAuth2Client
+    permission_classes = [AllowAny]
 
 
 class CustomPasswordResetView(PasswordResetView):
