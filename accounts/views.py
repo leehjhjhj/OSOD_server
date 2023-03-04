@@ -255,11 +255,11 @@ def google_callback(request):
         accept_status = accept.status_code
         # 뭔가 중간에 문제가 생기면 에러
         if accept_status != 200:
-            return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
+            return Response({'err_msg': 'failed to signup'}, status=accept_status)
         accept_json = accept.json()
         
         #accept_json.pop('user', None)
-        return JsonResponse(accept_json)
+        return Response(accept_json)
 
     except SocialAccount.DoesNotExist:
         # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
@@ -298,8 +298,6 @@ class GetGoogleAccessView(APIView):
         email_req_json = email_req.json()
         email = email_req_json.get('email')
         
-        # return JsonResponse({'access': access_token, 'email':email})
-
         #################################################################
 
         # 3. 전달받은 이메일, access_token, code를 바탕으로 회원가입/로그인
@@ -311,7 +309,7 @@ class GetGoogleAccessView(APIView):
             
             # 있는데 구글계정이 아니어도 에러
             if social_user.provider != 'google':
-                return JsonResponse({'err_msg': 'no matching social type'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'err_msg': 'no matching social type'}, status=status.HTTP_400_BAD_REQUEST)
             
             if user.is_first:
                 user.is_first = False
@@ -320,16 +318,15 @@ class GetGoogleAccessView(APIView):
             # 이미 Google로 제대로 가입된 유저 => 로그인 & 해당 우저의 jwt 발급
             data = {'access_token': access_token}
             accept = requests.post(f"{BASE_URL}accounts/google/login-test/", data=data)
-            
             accept_status = accept.status_code
             
             # 뭔가 중간에 문제가 생기면 에러
             if accept_status != 200:
-                return JsonResponse({'err_msg': 'failed to signin'}, status=accept_status)
+                return Response({'err_msg': 'failed to signin'}, status=accept_status)
 
             accept_json = accept.json()
             #accept_json.pop('user', None)
-            return JsonResponse(accept_json)
+            return Response(accept_json)
         
         except User.DoesNotExist:
             # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
@@ -341,11 +338,11 @@ class GetGoogleAccessView(APIView):
             accept_status = accept.status_code
             # 뭔가 중간에 문제가 생기면 에러
             if accept_status != 200:
-                return JsonResponse({'err_msg': 'failed to signup'}, status=accept_status)
+                return Response({'err_msg': 'failed to signup'}, status=accept_status)
             accept_json = accept.json()
             
             #accept_json.pop('user', None)
-            return JsonResponse(accept_json)
+            return Response(accept_json)
 
         except SocialAccount.DoesNotExist:
             # User는 있는데 SocialAccount가 없을 때 (=일반회원으로 가입된 이메일일때)
