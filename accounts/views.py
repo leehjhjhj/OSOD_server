@@ -162,7 +162,7 @@ class CustomVerifyEmailView(APIView, CustomConfirmEmailView):
 ####################구글##########################
 #################################################
 BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'google/test/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/test/'
 
 state = "vyv2dj"
 from django.utils.decorators import method_decorator
