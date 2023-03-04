@@ -162,7 +162,7 @@ class CustomVerifyEmailView(APIView, CustomConfirmEmailView):
 ####################구글##########################
 #################################################
 BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
-GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/callback/'
+GOOGLE_CALLBACK_URI = BASE_URL + 'google/test/'
 
 state = "vyv2dj"
 from django.utils.decorators import method_decorator
@@ -270,7 +270,7 @@ class GetGoogleAccessView(APIView):
         client_id = get_secret("client_id")
         client_secret = get_secret("client_secret")
         code = request.data.get("code")
-
+        
         # Google API에 access token을 요청하는 URL 생성
         url = "https://oauth2.googleapis.com/token"
         data = {
@@ -286,6 +286,7 @@ class GetGoogleAccessView(APIView):
 
         # 응답에서 access token 추출
         response_data = response.json()
+        return Response({"dd": f"{response_data}"})
         access_token = response_data.get("access_token")
         
         email_req = requests.get(f"https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}")
