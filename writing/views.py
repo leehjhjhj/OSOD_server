@@ -222,7 +222,7 @@ class MypageTodayIWroteView(ListAPIView):
 def get_dates(request):
     dates = {}
     today = datetime.now().date()
-    dates['today'] = today.strftime('%m/%d')
+    dates['today'] = today.strftime('%y.%m.%d')
     for i in range(1, 8):
         date = today - timedelta(days=i)
         dates[f'{i}_days_ago'] = date.strftime('%y.%m.%d')
