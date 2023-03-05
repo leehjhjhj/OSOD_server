@@ -1,0 +1,7 @@
+To verify your email address, click on the following link:
+
+{{activate_url}}
+
+Thanks for using our site!
+
+The {{ site_name }} team

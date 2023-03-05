@@ -233,8 +233,8 @@ EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/' # 사이트와 관련한 자
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 
 # 이메일에 자동으로 표시되는 사이트 정보
-ACCOUNT_EMAIL_SUBJECT_PREFIX = "OSOD "
-
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "OSOD " 
+ACCOUNT_EMAIL_CONFIRMATION_TEMPLATE = 'server/templates/account/email/email_confirmation.html'
 #####################소셜로그인 관련###################################
 
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = get_secret("SOCIAL_AUTH_GOOGLE_CLIENT_ID")

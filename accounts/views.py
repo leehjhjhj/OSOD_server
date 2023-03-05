@@ -258,26 +258,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
             {'detail': ('Password has been reset with the new password.')},
         )
 
-# def send_email_to_valid_recipients(subject, message, recipient_list):
-#     valid_recipients = []
-#     invalid_recipients = []
-    
-#     for recipient in recipient_list:
-#         try:
-#             validate_email(recipient)
-#             valid_recipients.append(recipient)
-#         except ValidationError:
-#             invalid_recipients.append(recipient)
-    
-#     # 유효하지 않은 이메일 주소 목록을 출력합니다.
-#     if invalid_recipients:
-#         print('Invalid email addresses: {}'.format(', '.join(invalid_recipients)))
-    
-#     # 유효한 이메일 주소 목록에 이메일을 보냅니다.
-#     if valid_recipients:
-#         send_mail(subject=subject, message=message, from_email=None, recipient_list=valid_recipients)
-
-
 class ContactView(APIView):
     permission_classes = [AllowAny]
 
