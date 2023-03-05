@@ -367,7 +367,7 @@ class GrammarCheckView(APIView):
         text = request.data.get('text')
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=f"Check this sentence'{text}' grammer and If nothing is wrong, tell me 'Perfect'. Else correct this to standard English and '수정된 문장입니다: ', do not said 'false' ",
+            prompt=f"Check this sentence'{text}' grammer and If nothing is wrong, tell me 'Perfect'. Else correct this to standard English. And Please quote the wrong part.",
             temperature=0,
             max_tokens=60,
             top_p=1.0,

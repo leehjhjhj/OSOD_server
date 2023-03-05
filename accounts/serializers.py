@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from .models import *
 from django.db import transaction
 from dj_rest_auth.registration.serializers import RegisterSerializer
@@ -19,6 +19,12 @@ class UserSerializer(RegisterSerializer):
         model = User
         fields = ['email', 'password', 'nickname', 'name', 'subscription']
 
+    def validate(self, data):
+        nickname = data['nickname']
+        if User.objects.filter(nickname=nickname).exists():
+            raise serializers.ValidationError({"nickname": "닉네임이 이미 사용중입니다."})
+        return data
+    
     def get_cleaned_data(self):
         super(UserSerializer, self).get_cleaned_data()
         return {
@@ -29,6 +35,7 @@ class UserSerializer(RegisterSerializer):
             'name': self.validated_data.get('name', ''),
             'subscription': self.validated_data.get('subscription', ''),
         }
+    
     def save(self, request):
         adapter = get_adapter()
         user = adapter.new_user(request)
