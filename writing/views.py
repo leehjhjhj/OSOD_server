@@ -225,7 +225,7 @@ def get_dates(request):
     dates['today'] = today.strftime('%m/%d')
     for i in range(1, 8):
         date = today - timedelta(days=i)
-        dates[f'{i}_days_ago'] = date.strftime('%m/%d')
+        dates[f'{i}_days_ago'] = date.strftime('%y.%m.%d')
     return Response(dates)
 
 class MypageOrderView(ListAPIView):
