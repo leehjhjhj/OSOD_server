@@ -226,7 +226,10 @@ def get_dates(request):
     dates['today'] = today.strftime('%y.%m.%d') + ' ' + dateDict[today.weekday()]
     for i in range(1, 8):
         date = today - timedelta(days=i)
-        dates[f'{i}_days_ago'] = date.strftime('%y.%m.%d') + ' ' + dateDict[date.weekday()]
+        dates[f'{i}_days_ago'] = {
+                "summary": date.strftime('%m/%d'),
+                "detail": date.strftime('%Y.%m.%d') + ' ' + dateDict[date.weekday()]
+            }
     return Response(dates)
 
 class MypageOrderView(ListAPIView):
