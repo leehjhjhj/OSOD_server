@@ -226,9 +226,18 @@ def get_dates(request):
     dates['today'] = today.strftime('%y.%m.%d') + ' ' + dateDict[today.weekday()]
     for i in range(1, 8):
         date = today - timedelta(days=i)
+        try: 
+            sentence = Sentence.objects.get(
+                                   created_at__year=date.year,
+                                   created_at__month=date.month,
+                                   created_at__day=date.day,).sentence
+        except:
+            sentence = None
+
         dates[f'{i}_days_ago'] = {
                 "summary": date.strftime('%m/%d'),
-                "detail": date.strftime('%Y.%m.%d') + ' ' + dateDict[date.weekday()]
+                "detail": date.strftime('%Y.%m.%d') + ' ' + dateDict[date.weekday()],
+                "sentence": sentence
             }
     return Response(dates)
 

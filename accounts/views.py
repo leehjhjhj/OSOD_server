@@ -35,6 +35,7 @@ from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from dj_rest_auth.registration.serializers import VerifyEmailSerializer
 from rest_framework.exceptions import MethodNotAllowed
+from django.http import HttpResponseRedirect
 User = get_user_model()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -117,7 +118,7 @@ class ReceiveConfirmEmailView(APIView):
         self.object = confirmation = self.get_object()
         confirmation.confirm(self.request)
         # A React Router Route will handle the failure scenario
-        return Response(status = status.HTTP_200_OK)
+        return HttpResponseRedirect(redirect_to='http://localhost:3000')
 
     def get_object(self, queryset=None):
         key = self.kwargs['key']
@@ -129,7 +130,7 @@ class ReceiveConfirmEmailView(APIView):
                 email_confirmation = queryset.get(key=key.lower())
             except EmailConfirmation.DoesNotExist:
                 # A React Router Route will handle the failure scenario
-                return Response(status = status.HTTP_404_NOT_FOUND)
+                return HttpResponseRedirect(redirect_to='http://localhost:3000')
         return email_confirmation
 
     def get_queryset(self):
