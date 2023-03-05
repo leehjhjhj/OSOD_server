@@ -220,12 +220,13 @@ class MypageTodayIWroteView(ListAPIView):
     
 @api_view(['GET'])
 def get_dates(request):
+    dateDict = {0: '월요일', 1:'화요일', 2:'수요일', 3:'목요일', 4:'금요일', 5:'토요일', 6:'일요일'}
     dates = {}
     today = datetime.now().date()
-    dates['today'] = today.strftime('%y.%m.%d')
+    dates['today'] = today.strftime('%y.%m.%d') + ' ' + dateDict[today.weekday()]
     for i in range(1, 8):
         date = today - timedelta(days=i)
-        dates[f'{i}_days_ago'] = date.strftime('%y.%m.%d')
+        dates[f'{i}_days_ago'] = date.strftime('%y.%m.%d') + ' ' + dateDict[date.weekday()]
     return Response(dates)
 
 class MypageOrderView(ListAPIView):
