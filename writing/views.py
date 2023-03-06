@@ -367,16 +367,17 @@ class GrammarCheckView(APIView):
         text = request.data.get('text')
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=f"Check this sentence'{text}' grammer and If nothing is wrong, tell me 'Perfect'. Else correct this to standard English. And Please quote the wrong part.",
+            #prompt = f"Check this sentence'{text}' and please contain in ['bool': 'True' or 'False', 'suggestion': correct this to standard English]",
+            prompt=f"'{text}' Correct this to standard English.",
             temperature=0,
             max_tokens=60,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
-        return Response({'response': response.choices[0].text.strip()}, status=status.HTTP_200_OK)
+        return Response({'response': response}, status=status.HTTP_200_OK)
 
 
-
+#.choices[0].text.strip()
 
 
