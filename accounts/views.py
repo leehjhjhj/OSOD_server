@@ -320,9 +320,10 @@ def make_nickname(request):
     try:
         user = request.user
         get_nick = request.data.get('nickname')
-        get_name = request.data.get('name')
+        #get_name = request.data.get('name')
+        if user.first_name:
+            user.name = user.first_name
         user.nickname = get_nick
-        user.name = get_name
         user.save(update_fields=['nickname', 'name'])
         return Response({
             "nickname": user.nickname,
