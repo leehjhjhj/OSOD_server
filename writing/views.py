@@ -32,6 +32,16 @@ def random_nickname():
     second = ['참새', '직박구리', '갈매기', '메추리', '비둘기', '기러기', '까마귀', '딱따구리', '뻐꾸기', '꿩']
     return f"{first[a]} {second[b]}"
 
+def grammar_wrong_response():
+    a = random.randrange(0,4)
+    first = ['이런건 어때요?', '제가 한번 고쳐봤어요!', '이렇게 고쳐봤어요!', '이게 더 자연스러워요!', '이게 더 나을 것 같아요.']
+    return f"{first[a]}"
+
+def grammar_correct_response():
+    a = random.randrange(0,4)
+    first = ['완벽해요!', '틀린게 없는 문장이에요!', '너무 좋은걸요?', '완벽한 문장이에요!!', '굉장히 좋은 문장이에요!']
+    return f"{first[a]}"
+
 def random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for _ in range(length))
@@ -376,10 +386,14 @@ class GrammarCheckView(APIView):
             presence_penalty=0.0
         )
         if text == response.choices[0].text.strip():
-            res = True
+            res = response.choices[0].text.strip()
+            ai = grammar_correct_response()
+            bool = True
         else:
             res = response.choices[0].text.strip()
-        return Response({'response': res}, status=status.HTTP_200_OK)
+            ai = grammar_wrong_response()
+            bool = False
+        return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
 
 
 #.choices[0].text.strip()
