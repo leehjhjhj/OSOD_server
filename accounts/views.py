@@ -223,28 +223,6 @@ class GoogleLogin(SocialLoginView):
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
-    html_email_template_name = 'password_reset_confirm.html'
-    # extra_email_context = {
-    #     'site_name': 'OSOD',
-    #     'password_reset_confirm_url': 'http://127.0.0.1:8000/password/reset/confirm/uid={{ uid }}&token={{ token }}/',
-    # }
-    # email_template_name = 'password_reset_confirm.html'
-    # extra_email_context = {
-    #     'site_name': 'OSOD',
-    # }
-    # def post(self, request, *args, **kwargs):
-    #     #data = request.data.copy()
-    #     #data["email"] = request.user.email
-    #     #return JsonResponse({"dd": f"{data}"})
-    #     serializer = self.get_serializer(data=data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-        
-    #     # Return the success message with OK HTTP status
-    #     return Response(
-    #         {'detail': ('Password reset e-mail has been sent.')},
-    #         status=status.HTTP_200_OK,
-    #     )
     
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
