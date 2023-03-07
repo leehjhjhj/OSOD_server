@@ -375,7 +375,11 @@ class GrammarCheckView(APIView):
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
-        return Response({'response': response}, status=status.HTTP_200_OK)
+        if text == response.choices[0].text.strip():
+            res = True
+        else:
+            res = response.choices[0].text.strip()
+        return Response({'response': res}, status=status.HTTP_200_OK)
 
 
 #.choices[0].text.strip()
