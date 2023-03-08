@@ -267,14 +267,15 @@ class ContactView(APIView):
 
         message = render_to_string('email_template.html', context)
         subject = f"[OSOD] {get_day_of_the_week(target_sentence.created_at)}의 영작"
-        to = send_list
-        send_mail(
-            subject = subject,
-            message = "",
-            from_email = None,
-            recipient_list = to,
-            html_message = message
-        )
+        tos = send_list
+        for to in tos:
+            send_mail(
+                subject = subject,
+                message = "",
+                from_email = None,
+                recipient_list = [to],
+                html_message = message
+            )
         return Response(status=status.HTTP_201_CREATED)
     
 @api_view(['GET'])
