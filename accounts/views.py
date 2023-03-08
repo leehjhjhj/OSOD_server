@@ -275,7 +275,7 @@ class ContactView(APIView):
             recipient_list = to,
             html_message = message
         )
-        return Response(status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])

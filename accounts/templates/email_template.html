@@ -1,17 +1,41 @@
-<!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Email Template</title>
-  </head>
-  <body style="background-color: #cfe2f3; font-family: Arial, sans-serif; color: #0d1a26;">
-    <div style="background-color: #0d1a26; padding: 1rem; color: white;">
-      <h1 style="font-size: 2rem;">[{{ created_at|date:'F j, Y' }}] {{ day_of_the_week }}의 영작입니다.</h1>
-    </div>
-    <div style="padding: 1rem;">
-      <h2 style="font-size: 1.5rem; margin-top: 0;">{{ sentence }}</h2>
-      <p>{{ discription }}</p>
-      <p>{{ translate }}</p>
-    </div>
-  </body>
-</html>
+<div style="background-color: #f8f8f8;padding: 60px 0;"> 
+
+ <table style="width: 640px; margin: 0 auto; background-color: #fff; padding-top: 50px;text-align: center;">
+    
+    <tr>
+      <td class="last_td" style="padding-bottom: 10px;">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGsAAAAoCAMAAADOrfT8AAACeVBMVEUAAAAA//+AgP9Vqv+AgP9mmf+AgP9tkv+AgP9xjv+AgP90i/9qgP92if9tkv9wj/94h/9xjv95hv9zjP90i/9vhf91iv9wj/92if9xjv9yjf94h/9xh/91iv92if9zjP92if9zjP93iP90i/9xiP90i/9yiP91iv91iv9zjP92if92if90i/9yiP91iv91iv9zjP91iv90i/92if9yif9zif91iv9zjP91iv90i/90i/9yif90i/90i/9zif91iv9zif91iv90i/91iv90i/9ziv90i/9zif90i/91iv91iv90if9ziv90i/91iv9zif91iv90if90i/9ziv90i/9zif91iv90if91iv90if91iv90if90i/90i/9ziv90i/90if9ziv90if90if9ziv90i/9ziv90i/90i/91iv90if9ziv91iv90if91iv90if90i/9ziv90i/90iv91iv90iv91iv90if91iv90if9ziv90i/9ziv90i/90iv90i/90iv91iv90iv9ziv90if90iv90i/90iv91iv90iv91iv90iv9ziv90if90iv90if90iv90i/90iv91iv90iv91iv90iv9ziv90iv90iv90if90iv90i/90iv90iv91iv90iv9ziv90iv90iv90iv90if90iv90i/91iv90iv9ziv90iv90iv90iv90iv90if90iv91iv90iv9ziv90iv90iv90iv90iv90iv90if90iv91iv90iv90iv90iv90iv90iv90iv90iv90iv90iv90i/90iv90iv90iv90iv90iv90iv90iv90iv90iv90iv90iv90iv////89KaHZAAAA0XRSTlMAAQIDBAUGBwgJCgsMDQ4QERITFBYXGBkaGx0gIiMnKCkqKywtLi8wMjM0Njk6Oz0+P0BBQ0VGSUpLTU5PUVJTVFVWV1hZWltcXmBhZmdpamtsbm9wc3R1dnd4eXt9fn+AgYKEhYaHiIqMjY6Oj5CRk5SVlpeYmZqbnJ2en6ChoqOkpaiprK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMbHyMnKy83Oz9DS09TV1tfY2dzd3t/g4eLk5ebn6Onq6+zt7vDx8vP09fb3+Pn6+/z9/o3qrU0AAAABYktHRNLg2K6wAAAD40lEQVRYw+1W+V9MURQ/rygjlFZrlKXS2CMKoSaRXXYlu0JZUtkqa5kW2amJEEmGQomIqTCVmXr/kXkz75573zJ+8/HL3B/mc973e8/5zjv3nPMuwD9fJ3jH6geXlkvLpeXScmn9Py1u6hb9sxZTa13ptgg36WbPuGxDs8nUUluwIZSB/XVnDcaO9saq7JgR8vieC7NLHtWUpEdwSi2PlW95uj5s8qJuQ9I7GMqYIMLhhVaK9hWGsErD9nUS5vEMuVZ0Gy9dXxcTv/FGKTPX8U5lMof+3KEoFcVGG9gq0XLPHOAVK2ew3W9MqxS+a0fnflY6GEl+E/ukhInR4vJ4tXXJfmp6GaoVQO1PNYevwXapOVZefQlau51wh4RToTvNwm+5EG1ip7pDs4+NDGznnWuF/HbGTQM4INrmJA8Iijr/M1zQeuAs2nGmwlW17tGnV5nbM17Sx2qAG6J52XEUGuEnnu7oLNq1W0+PxzIJAsyUrT+dVd7Dak1A+4eOE0It70YkFJ6L1psAWtHVyBcKSYOxBgSyIAXt97MFMvAKo5VGTGuUGGuOhUCp8AQ7qHLnTE87PbqfYBdFB00dQVo5kgi+bbQ4IwqoVhUx8/CPnyZQFVxiE24unmdjk7CWfYhDBG6ZgBUaR8jhX1CriZCRoHBthmWy863whR3EzqdpxRdbhK9F51wmauFZ0r73JK3dA+418o71zibmJqp1gWBbiXGTkitQi3Q1T+enhkC9HPjdl4mdPUyszTRcoULrFiV1qPWasLOQ1GIpCWe79GE/q2VJJVYRDddAsFhifOKQPIRad+RVxWSkxvEcpMtpoHpHsEf8icN0JEOwYRYQ0qsNtfZiScaKZDTGzaD/fFwpAfdg4BLx/Ic3Ymm647amkaJnHq35MHTtXetuo9xW01afDnBwsugSTMC12HP89SCBCX2OwDlYR4dQmECOvMDOKObwP+Tvz3tHH2sBZvGW/BBJNfGxCUzH6Q9m3qdz3RoGfj9o7OpjB652S+bhVKffAFvHCZ0+UH9045pc8ra//TiDs+maw1SC+jflqBMuC2C+EtXbPjRmdYdWXyFpLX/TcrumSukHATxWoL1CRmNUU/HNkezI3r9ogaZYhbk8BCBWuX+VPV7SL6VDyzSxihZJSatRerdZ3yNz7E62T/wXMrhLJ8YLbZBLXcFJDJFsGi2J8jubf7qJ4b+k+4ofhCWVTLrM50ZhPLeYp+zrlmnZO5smtYswz8JV7qJe0YcNb75b21/dTpvpwfgFJufWfTSbP9WfSfaWXDe5KSn6l219XU21p+IDlHfRk+Uv6isytLZR5TdOXH8AmA5sxeoNwlsAAAAASUVORK5CYII=">
+        <p style="color: #748AFF; font-size: 13px; border-bottom: solid 1px; width:124px; margin:20px auto;">{{ created_at|date:'Y년 F j일' }} {{ day_of_the_week }}</p>
+        <p style="width: 540px; margin: 0 auto; font-size: 18px; color:#3e3e3e; line-height: 1.69; letter-spacing: normal;padding-bottom:20px;">
+            오늘의 구문을 사용하여 영어 글쓰기를 연습해 보세요.
+        </p>
+        <p style="width: 540px; margin: 0 auto; font-size: 36px; color:#3e3e3e; font-weight:900;font-family: pretendard; letter-spacing: normal;padding-bottom:20px;">    
+            {{ sentence }}
+        </p>
+        <p style="width: 540px; margin: 0 auto; font-size: 16.8px; color:#3e3e3e; line-height: 1.69; font-family: times new Roman; font-style: italic; letter-spacing: normal;">
+            {{ discription }}
+        </p>
+        <p style="font-size: 14px; color:#909090; margin:4px;" >{{ translate }}</p>
+      </td>
+    </tr>
+
+    <tr style="text-align: center;">
+        <td style="padding-top: 45px; padding-bottom: 70px;">
+            <a href="http://127.0.0.1:8000" target="_blank" 
+            style="cursor: pointer; width:410px; height:56px; color:#fff;text-decoration: none;font-weight: bold; border-radius:10px; font-size: 18px; padding: 17.5px 126px;background-color: #748AFF; margin:0 auto; ">
+            영작 하러 가기
+        </td>
+    </tr> 
+ </table>
+
+ <table style="width: 640px; margin: 0 auto;background-color: #fff; padding-top:20px;">
+     <tr>
+        <td style="text-align: center;">
+            <p style="font-size: 12px; color:#909090;">본 메일은 회원님이 osod 구독 신청에 동의하였기에 발송된 메일입니다.</p>
+            <a href="http://127.0.0.1:8000" style="font-size: 12px; color:#909090;">구독 취소</a>
+            <p style="color:8b8b8b; line-height: 1.8; letter-spacing: -0.32; font-size: 12px; font-weight: normal;">copyright © osod All Rights Reserved. Prod By. SWYG</p>
+        </td>
+    </tr>
+ </table>
+
+</div>
