@@ -11,7 +11,7 @@ class SentenceSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Sentence
-        fields = ['id', 'sentence', 'discription', 'created_at', 'translate', 'day_of_the_week', 'source']
+        fields = ['id', 'sentence', 'discription', 'created_at', 'translate', 'day_of_the_week']
 
     def get_day_of_the_week(self, obj):
         created_at = obj.created_at
