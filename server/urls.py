@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from accounts.views import CustomPasswordResetView, CustomPasswordResetConfirmView, CustomVerifyEmailView, ReceiveConfirmEmailView
+from accounts.views import CustomPasswordResetView, CustomPasswordResetConfirmView, CustomVerifyEmailView, ReceiveConfirmEmailView, CustomPasswordChangeView
 # urls.py
 from dj_rest_auth.registration.views import VerifyEmailView, RegisterView
 from dj_rest_auth.views import (
@@ -16,7 +16,7 @@ urlpatterns = [
     # 로그인
     path('login/', CustomLoginView.as_view(), name='rest_login'),
     path('logout/', LogoutView.as_view(), name='rest_logout'),
-    path('password/change/', PasswordChangeView.as_view(), name='rest_password_change'),
+    path('password/change/', CustomPasswordChangeView.as_view(), name='rest_password_change'),
     path('password/reset/', CustomPasswordResetView.as_view(), name='reset'),
     path('password/reset/confirm/uid=<str:uid>&token=<str:token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # 회원가입

@@ -13,7 +13,7 @@ from dj_rest_auth.registration.views import SocialLoginView, LoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
 from django.shortcuts import redirect
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
+from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -166,6 +166,9 @@ BASE_URL = 'https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app/'
 GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/login/'
 
 state = "vyv2dj"
+class CustomPasswordChangeView(PasswordChangeView):
+    #permission_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
 
 class GetGoogleAccessView(APIView):
     def post(self, request, *args, **kwargs):
