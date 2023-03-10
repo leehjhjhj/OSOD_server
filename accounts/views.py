@@ -226,6 +226,7 @@ class GoogleLogin(SocialLoginView):
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
+
     
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
