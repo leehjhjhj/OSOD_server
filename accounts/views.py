@@ -78,7 +78,7 @@ class CustomLoginView(LoginView):
             }
 
             if not auth_httponly:
-                data['refresh_token'] = self.refresh_token
+                data['refresh_token'] = ""
             else:
                 # Wasnt sure if the serializer needed this
                 data['refresh_token'] = ""
@@ -106,8 +106,15 @@ class CustomLoginView(LoginView):
             self.user.save(update_fields=['is_first'])
     
         if getattr(settings, 'REST_USE_JWT', False):
-            from dj_rest_auth.jwt_auth import set_jwt_cookies
-            set_jwt_cookies(response, self.access_token, self.refresh_token)
+            # Set refresh token to HttpOnly cookie
+            response.set_cookie(
+                key='refresh_token',
+                value=str(self.refresh_token),
+                expires=refresh_token_expiration,
+                httponly=True,
+                secure=True,
+            )
+        response.delete_cookie('sessionid')
         return response
 
 
@@ -200,8 +207,13 @@ class GetGoogleAccessView(APIView):
             if accept_status != 200:
                 return Response({'err_msg': 'failed to signin'}, status=accept_status)
 
+            # accept_json = accept.json()
+            # return Response(accept_json)
             accept_json = accept.json()
-            return Response(accept_json)
+            refresh_token = accept_json.get('refresh_token')
+            response = Response(accept_json)
+            response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+            return response
         
         except User.DoesNotExist:
             data = {'access_token': access_token}
@@ -212,10 +224,13 @@ class GetGoogleAccessView(APIView):
 
             if accept_status != 200:
                 return Response({'err_msg': 'failed to signup'}, status=accept_status)
-            accept_json = accept.json()
             
-            return Response(accept_json)
-
+            accept_json = accept.json()
+            refresh_token = accept_json.get('refresh_token')
+            response = Response(accept_json)
+            response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+            return response
+        
         except SocialAccount.DoesNotExist:
             return JsonResponse({'err_msg': 'email exists but not social user'}, status=status.HTTP_400_BAD_REQUEST)     
 
