@@ -238,10 +238,24 @@ class GoogleLogin(SocialLoginView):
     adapter_class = google_view.GoogleOAuth2Adapter
     permission_classes = [AllowAny]
 
+# from django.utils.encoding import force_bytes
+# from django.utils.http import urlsafe_base64_encode
+# from django.contrib.auth.tokens import PasswordResetTokenGenerator
+# from django.contrib.auth.views import PasswordResetView
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
-
+    # extra_email_context = {}
+    
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     uid = urlsafe_base64_encode(force_bytes(self.object.pk))
+    #     token = PasswordResetTokenGenerator().make_token(self.object)
+    #     password_reset_url = f"{self.request.scheme}://localhost:3000/password/reset/confirm/uid={uid}&token={token}/"
+    #     extra_context = {'password_reset_url': password_reset_url}
+    #     context = {**self.extra_email_context, **extra_context}
+    #     self.send_mail(context=context)
+    #     return response
     
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
