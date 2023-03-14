@@ -21,13 +21,14 @@ SECRET_KEY = get_secret("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000', 'https://osod-swygbro.com']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://osod-swygbro.com"]
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://127.0.0.1:8000",
+    "https://osod-swygbro.com",
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -175,7 +176,6 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 #ACCOUNT_EMAIL_VERIFICATION = 'none'
 REST_USE_JWT = True
-PASSWORD_RESET_URL = 'http://localhost:3000/password/reset/uid={uid}&token={token}/'
 from datetime import timedelta
 
 SIMPLE_JWT = {
