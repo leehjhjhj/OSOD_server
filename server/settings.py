@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'corsheaders',
+    'django_crontab',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -246,3 +247,7 @@ STATE = "vyv2dj"
 
 SITE_ID = 1
 AUTH_USER_MODEL = 'accounts.User'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'accounts.views.ContactView.as_view()'),
+]

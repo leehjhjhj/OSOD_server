@@ -16,9 +16,11 @@ dj-rest-auth==2.2.7
 Django==4.1.5
 django-allauth==0.51.0
 django-cors-headers==3.13.0
+django-crontab==0.7.1
 django-dotenv==1.4.2
 django-environ==0.9.0
 django-extensions==3.2.1
+django-humanize==0.1.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 drf-yasg==1.21.4
@@ -32,6 +34,7 @@ googleapis-common-protos==1.58.0
 grpcio==1.51.1
 grpcio-status==1.51.1
 gunicorn==20.1.0
+humanize==4.6.0
 idna==3.4
 inflection==0.5.1
 itypes==1.2.0
