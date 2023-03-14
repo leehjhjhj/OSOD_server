@@ -261,7 +261,7 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
-        data["uid"] = self.kwargs.get("uid")
+        data["uid"] = self.kwargs.get("uid64")
         data["token"] = self.kwargs.get("token")
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
