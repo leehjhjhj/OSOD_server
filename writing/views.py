@@ -375,6 +375,9 @@ class GrammarCheckView(APIView):
     def post(self, request):
         openai.api_key = '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'
         text = request.data.get('text')
+        if not text:
+            return Response({'response': "", 'ai': "검사할 값이 없어요", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
+        
         response = openai.Completion.create(
             model="text-davinci-003",
             #prompt = f"Check this sentence'{text}' and please contain in ['bool': 'True' or 'False', 'suggestion': correct this to standard English]",
