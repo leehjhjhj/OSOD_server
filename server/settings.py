@@ -251,3 +251,4 @@ AUTH_USER_MODEL = 'accounts.User'
 CRONJOBS = [
     ('*/1 * * * *', 'accounts.views.ContactView.as_view()'),
 ]
+APPEND_SLASH = False
