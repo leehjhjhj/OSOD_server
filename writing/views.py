@@ -381,7 +381,7 @@ class GrammarCheckView(APIView):
         response = openai.Completion.create(
             model="text-davinci-003",
             #prompt = f"Check this sentence'{text}' and please contain in ['bool': 'True' or 'False', 'suggestion': correct this to standard English]",
-            prompt=f"'{text}' Correct this to standard English.",
+            prompt=f"'{text}' correct if grammar wrong. delete "" ",
             temperature=0,
             max_tokens=60,
             top_p=1.0,
@@ -398,7 +398,7 @@ class GrammarCheckView(APIView):
             bool = False
         return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
 
-
+#Correct this to standard English.
 #.choices[0].text.strip()
 
 
