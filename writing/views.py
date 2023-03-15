@@ -192,10 +192,10 @@ class MainSentenceView(ListAPIView):
         today = datetime.now().date()
         return Sentence.objects.filter(
                                 created_at__year=today.year,
-                                # created_at__month=today.month,
-                                # created_at__day=today.day,
-                                created_at__month=2,
-                                created_at__day=27,
+                                created_at__month=today.month,
+                                created_at__day=today.day,
+                                # created_at__month=2,
+                                # created_at__day=27,
                                 ).order_by('-created_at')
     
 class SubscriptionListCreateView(ListCreateAPIView):
