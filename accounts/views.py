@@ -78,10 +78,10 @@ class CustomLoginView(LoginView):
             }
 
             if not auth_httponly:
-                data['refresh_token'] = self.refresh_token,
+                data['refresh_token'] = str(self.refresh_token)
             else:
                 # Wasnt sure if the serializer needed this
-                data['refresh_token'] = self.refresh_token,
+                data['refresh_token'] = ""
 
             if return_expiration_times:
                 data['access_token_expiration'] = access_token_expiration
@@ -174,9 +174,8 @@ GOOGLE_CALLBACK_URI = BASE_URL + 'accounts/google/login/'
 
 state = "vyv2dj"
 class CustomPasswordChangeView(PasswordChangeView):
-    #permission_classes = [JWTAuthentication]
     authentication_classes = [JWTAuthentication]
-
+    
 class GetGoogleAccessView(APIView):
     def post(self, request, *args, **kwargs):
         access_token = request.data.get("access_token")

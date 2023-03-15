@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.contrib.auth.forms import SetPasswordForm
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.urls import reverse
+from dj_rest_auth.serializers import PasswordChangeSerializer
 
 class UserSerializer(RegisterSerializer):
     nickname = serializers.CharField(max_length=50)
