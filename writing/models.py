@@ -7,6 +7,8 @@ class Sentence(models.Model):
     created_at = models.DateTimeField(null=True)
     translate = models.CharField(max_length=200, null=True)
 
+    def __str__(self):
+        return self.discription
 
 class Post(models.Model):
     body = models.CharField(max_length=200)
@@ -17,6 +19,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     unknown = models.CharField(max_length=200, null=True)
 
+    def __str__(self):
+        return self.body
+    
 class Subsription(models.Model):
     sub_email = models.EmailField(unique=True, max_length=50)
     sub_nickname = models.CharField(max_length=50, unique=True, null=True)
