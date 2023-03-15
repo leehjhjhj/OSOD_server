@@ -78,10 +78,10 @@ class CustomLoginView(LoginView):
             }
 
             if not auth_httponly:
-                data['refresh_token'] = ""
+                data['refresh_token'] = self.refresh_token,
             else:
                 # Wasnt sure if the serializer needed this
-                data['refresh_token'] = ""
+                data['refresh_token'] = self.refresh_token,
 
             if return_expiration_times:
                 data['access_token_expiration'] = access_token_expiration
