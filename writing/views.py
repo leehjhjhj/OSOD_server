@@ -327,6 +327,8 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/innate-vigil-377910-ff58e0a
 class TranslateView(APIView):
     def post(self, request):
         text = request.data.get('text')
+        if not text:
+            return Response({'translation': "번역할 문장이 없어요!"}, status=status.HTTP_200_OK)
         client = translate.Client()
         result = client.translate(text, target_language='ko')
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
@@ -379,7 +381,7 @@ class GrammarCheckView(APIView):
         openai.api_key = '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'
         text = request.data.get('text')
         if not text:
-            return Response({'response': "", 'ai': "검사할 값이 없어요", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'response': "", 'ai': "검사할 문장이 없어요!", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
         
         response = openai.Completion.create(
             model="text-davinci-003",
