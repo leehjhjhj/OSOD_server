@@ -21,10 +21,11 @@ class SentenceSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     user = UserDetailSerializer(read_only=True)
     bool_like = serializers.SerializerMethodField()
+    time_ago = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at", "unknown"]
+        fields = ["id", "user", "body", "sentence", "like_num", "bool_like", "created_at", "unknown", "time_ago"]
 
     def get_bool_like(self, obj):
         request = self.context.get("request")
@@ -32,6 +33,19 @@ class PostSerializer(serializers.ModelSerializer):
             return True
         return False
 
+    def get_time_ago(self, obj):
+        now = datetime.now()
+        created_at = obj.created_at
+        cal_time = now - created_at
+        if cal_time.seconds >= 86400:
+            time_ago = f"{cal_time.seconds // 86400}일 전"
+        elif cal_time.seconds >= 3600:
+            time_ago = f"{cal_time.seconds // 3600}시간 전"
+        elif cal_time.seconds >= 60:
+            time_ago = f"{cal_time.seconds // 60}분 전"
+        else:
+            time_ago = f"{cal_time.seconds}초 전"
+        return time_ago
   
 
 class LikeUsersSerializer(serializers.ModelSerializer):
