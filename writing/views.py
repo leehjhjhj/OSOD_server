@@ -34,7 +34,7 @@ def random_nickname():
 
 def grammar_wrong_response():
     a = random.randrange(0,4)
-    first = ['이런건 어때요?', '제가 한번 고쳐봤어요!', '이렇게 고쳐봤어요!', '이게 더 자연스러워요!', '이게 더 나을 것 같아요.']
+    first = ['이런건 어때요?', '제가 한번 제안할게요!', '이게 더 자연스러울 수도 있어요!', '이게 더 나을 수도 있어요!', '이렇게 작문할 수도 있어요!']
     return f"{first[a]}"
 
 def grammar_correct_response():
