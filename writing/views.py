@@ -393,14 +393,35 @@ class GrammarCheckView(APIView):
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
-        if text == response.choices[0].text.strip():
-            res = response.choices[0].text.strip()
-            ai = grammar_correct_response()
-            bool = True
+        target_res = response.choices[0].text.strip()
+        #return Response({"dd": f"{response.choices[0].text}"})
+        if target_res[0] == "\"":
+            cut_target = target_res.strip("\"")
+            #return Response({"dd": f"{cut_target}"})
+            if text == cut_target:
+                res = cut_target
+                ai = grammar_correct_response()
+                bool = True
+            else:
+                res = cut_target
+                ai = grammar_wrong_response()
+                bool = False
+
         else:
-            res = response.choices[0].text.strip()
-            ai = grammar_wrong_response()
-            bool = False
+            if text == target_res:
+                res = target_res
+                ai = grammar_correct_response()
+                bool = True
+            else:
+                res = target_res
+                ai = grammar_wrong_response()
+                bool = False
+
+        # if text == response.choices[0].text.strip():
+        #     res = response.choices[0].text.strip()
+        #     ai = grammar_correct_response()
+        #     bool = True
+
         return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
 
 #Correct this to standard English.
