@@ -221,7 +221,7 @@ EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD") # 발신할 메일의 �
 
 EMAIL_USE_TLS = True # TLS 보안 방법
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = "OSOD <officialosod@gmail.com>"
 
 #URL_FRONT = 'http://****' # 공개적인 웹페이지가 있다면 등록
 
@@ -249,6 +249,5 @@ SITE_ID = 1
 AUTH_USER_MODEL = 'accounts.User'
 
 CRONJOBS = [
-    ('*/1 * * * *', 'accounts.views.ContactView.as_view()'),
 ]
 APPEND_SLASH = False

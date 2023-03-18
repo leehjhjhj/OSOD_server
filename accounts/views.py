@@ -304,7 +304,7 @@ class ContactView(APIView):
             send_mail(
                 subject = subject,
                 message = "",
-                from_email = None,
+                from_email = 'OSOD <officialosod@gmail.com>',
                 recipient_list = [to],
                 html_message = message
             )
