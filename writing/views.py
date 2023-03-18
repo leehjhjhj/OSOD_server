@@ -60,7 +60,7 @@ def get_today_postcnt(request):
 
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
-    page_size = 5
+    page_size = 10
 
     def get_paginated_response(self, data):
         return Response(OrderedDict([
@@ -385,7 +385,6 @@ class GrammarCheckView(APIView):
         
         response = openai.Completion.create(
             model="text-davinci-003",
-            #prompt = f"Check this sentence'{text}' and please contain in ['bool': 'True' or 'False', 'suggestion': correct this to standard English]",
             prompt=f"'{text}' correct if grammar wrong. don't contain \" ",
             temperature=0,
             max_tokens=60,
@@ -394,10 +393,8 @@ class GrammarCheckView(APIView):
             presence_penalty=0.0
         )
         target_res = response.choices[0].text.strip()
-        #return Response({"dd": f"{response.choices[0].text}"})
         if target_res[0] == "\"":
             cut_target = target_res.strip("\"")
-            #return Response({"dd": f"{cut_target}"})
             if text == cut_target:
                 res = cut_target
                 ai = grammar_correct_response()
