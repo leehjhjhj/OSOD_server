@@ -22,6 +22,7 @@ from google.oauth2 import service_account
 from google.cloud import texttospeech
 from rest_framework_simplejwt.authentication import JWTAuthentication
 import openai
+import spacy
 
 #####################################################
 
@@ -58,6 +59,18 @@ def get_today_postcnt(request):
                 "today_postcnt": today_postcnt,
                 }, status = status.HTTP_200_OK)
 
+def is_pattern_used(sentence, pattern):
+    nlp = spacy.load("en_core_web_sm")
+    sentence_doc = nlp(sentence.lower())
+    pattern_doc = nlp(pattern.lower())
+    new_sentence = ""
+    new_sentence = " ".join([token.lemma_ if token.pos_ == "AUX" else token.text for token in sentence_doc])
+    new_pattern = " ".join([token.lemma_ if token.pos_ == "AUX" else token.text for token in pattern_doc])
+    if new_pattern in new_sentence:
+        return True
+    else:
+        return False
+    
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 10
@@ -107,6 +120,7 @@ class PostListCreateView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         sentence_id = self.kwargs.get("sentence_id")
+        self.request.GET("text")
         if self.request.user.is_authenticated:
             user = self.request.user
             serializer.save(user=user, sentence_id=sentence_id)
@@ -115,6 +129,14 @@ class PostListCreateView(ListCreateAPIView):
             unknown = random_nickname()
             serializer.save(user=user, sentence_id=sentence_id, unknown=unknown)
 
+class CheckPatternView(APIView):
+    def post(self, request, *args, **kwargs):
+        text = request.data.get('text')
+        sentence = request.data.get("sentence")
+        if is_pattern_used(text, sentence):
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class PostOrderView(ListAPIView):
     serializer_class = PostSerializer
