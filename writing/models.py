@@ -6,6 +6,7 @@ class Sentence(models.Model):
     discription = models.CharField(max_length=200)
     created_at = models.DateTimeField(null=True)
     translate = models.CharField(max_length=200, null=True)
+    korean = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.discription
