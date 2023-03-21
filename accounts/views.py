@@ -344,3 +344,17 @@ def make_nickname(request):
         return Response({
             "detail": "중복이거나 형식이 잘못됐습니다.",
         },status = status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+def change_nickname(request):
+    user = request.user
+    new_nick = request.data.get('nickname')
+    if User.objects.filter(nickname=new_nick).exists():
+        return Response({"detail": "중복된 닉네임 입니다."},status = status.HTTP_400_BAD_REQUEST)
+    elif user.nickname == new_nick:
+        return Response({"detail": "기존 닉네임과 동일합니다."},status = status.HTTP_400_BAD_REQUEST)
+    
+    user.nickname = new_nick
+    user.save(update_fields=['nickname'])
+    return Response({"nickname": user.nickname},status = status.HTTP_200_OK)
