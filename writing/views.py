@@ -64,8 +64,8 @@ def is_pattern_used(sentence, pattern):
     sentence_doc = nlp(sentence.lower())
     pattern_doc = nlp(pattern.lower())
     new_sentence = ""
-    new_sentence = " ".join([token.lemma_ if token.pos_ == "AUX" else token.text for token in sentence_doc])
-    new_pattern = " ".join([token.lemma_ if token.pos_ == "AUX" else token.text for token in pattern_doc])
+    new_sentence = " ".join([token.lemma_ if token.pos_ == "AUX" or token.pos_ == "VERB" else token.text for token in sentence_doc])
+    new_pattern = " ".join([token.lemma_ if token.pos_ == "AUX" or token.pos_ == "VERB" else token.text for token in pattern_doc])
     if new_pattern in new_sentence:
         return True
     else:
