@@ -59,11 +59,17 @@ def get_today_postcnt(request):
                 "today_postcnt": today_postcnt,
                 }, status = status.HTTP_200_OK)
 
-def is_pattern_used(sentence, pattern):
-    sentence = sentence.replace("'ve", " have").replace("'ll", " will").replace("n't", " not").replace("re", " are")
-    pattern = pattern.replace("'ve", " have").replace("'ll", " will").replace("n't", " not").replace("re", " are")
+# Load the model only once
+nlp = spacy.load("en_core_web_sm")
 
-    nlp = spacy.load("en_core_web_sm")
+# Create a dictionary for pattern replacement
+patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
+
+def is_pattern_used(sentence, pattern):
+    for old, new in patterns.items():
+        sentence = sentence.replace(old, new)
+        pattern = pattern.replace(old, new)
+
     pattern_doc = nlp(pattern.lower())
     for doc in pattern_doc:
         if doc.lemma_ == "will":
@@ -73,13 +79,11 @@ def is_pattern_used(sentence, pattern):
 
     sentence_doc = nlp(sentence.lower())
 
-    new_sentence = " ".join([token.lemma_ if token.pos_ == "AUX" or token.pos_ == "VERB" else token.text for token in sentence_doc])
-    new_pattern = " ".join([token.lemma_ if token.pos_ == "AUX" or token.pos_ == "VERB" else token.text for token in pattern_doc])
+    # Use a generator expression instead of a list comprehension
+    new_sentence = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in sentence_doc)
+    new_pattern = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in pattern_doc)
 
-    if new_pattern in new_sentence:
-        return True
-    else:
-        return False
+    return new_pattern in new_sentence
     
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
