@@ -120,7 +120,6 @@ class PostListCreateView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         sentence_id = self.kwargs.get("sentence_id")
-        self.request.GET("text")
         if self.request.user.is_authenticated:
             user = self.request.user
             serializer.save(user=user, sentence_id=sentence_id)
