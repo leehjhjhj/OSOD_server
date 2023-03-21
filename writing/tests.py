@@ -10,7 +10,7 @@ def is_pattern_used(sentence, pattern):
     for doc in pattern_doc:
         if doc.lemma_ == "will":
             sentence = sentence.replace("'d", " would")
-        elif doc.lemma_ == "have" and doc.pos_ == "AUX":
+        elif doc.lemma_ == "have":
             sentence = sentence.replace("'d", " had").replace("'s", " has")
 
     sentence_doc = nlp(sentence.lower())
@@ -23,4 +23,4 @@ def is_pattern_used(sentence, pattern):
     else:
         return False
     
-print(is_pattern_used("I'd be good at him", "would be good at"))
+print(is_pattern_used("She's good at him", "has good at"))
