@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from rest_framework import status
 from email.message import EmailMessage
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from .models import *
 from writing.models import Subsription, Sentence
 from .serializers import *
@@ -32,7 +32,6 @@ from pathlib import Path
 import os, json 
 from django.core.exceptions import ImproperlyConfigured 
 from django.utils import timezone
-from django.contrib.auth.hashers import make_password
 from dj_rest_auth.registration.serializers import VerifyEmailSerializer
 from rest_framework.exceptions import MethodNotAllowed
 from django.http import HttpResponseRedirect
@@ -268,47 +267,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         return Response(
             {'detail': ('Password has been reset with the new password.')},
         )
-
-class ContactView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        sub_users = User.objects.filter(subscription=True)
-        sub_unknowns = Subsription.objects.all()
-
-        today = datetime.now().date()
-        target_sentence = Sentence.objects.get(
-                                created_at__year=today.year,
-                                created_at__month=today.month,
-                                created_at__day=today.day,
-                                )
-
-        sub_users_list = [sub_user.email for sub_user in sub_users]
-        sub_unknowns_list = [sub_unknown.sub_email for sub_unknown in sub_unknowns]
-        send_list = sub_users_list + sub_unknowns_list
-        send_list = set(send_list)
-        send_list = list(send_list)
-
-        context = {
-            'created_at': target_sentence.created_at,
-            "day_of_the_week": get_day_of_the_week(target_sentence.created_at),
-            'sentence': target_sentence.sentence,
-            'discription': target_sentence.discription,
-            'translate': target_sentence.translate,
-        }
-
-        message = render_to_string('email_template.html', context)
-        subject = f"[OSOD] {get_day_of_the_week(target_sentence.created_at)}의 영작"
-        tos = send_list
-        for to in tos:
-            send_mail(
-                subject = subject,
-                message = "",
-                from_email = 'OSOD <officialosod@gmail.com>',
-                recipient_list = [to],
-                html_message = message
-            )
-        return Response(status=status.HTTP_201_CREATED)
     
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])

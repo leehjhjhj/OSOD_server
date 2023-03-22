@@ -29,6 +29,6 @@ def is_pattern_used(sentence, pattern):
 
     return new_pattern in new_sentence
 
-print(is_pattern_used("He's good at him", "be good at"))
+print(is_pattern_used("He'd good at him", "have good at"))
 
 

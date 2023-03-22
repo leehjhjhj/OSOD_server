@@ -141,4 +141,7 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
         opts.update(self.get_email_options())
         self.reset_form.save(**opts)
 
-
+class NoticeMailSerialzier(serializers.Serializer):
+    subject = serializers.CharField(max_length=200)
+    body_subject = serializers.CharField(max_length=200)
+    body = serializers.CharField(max_length=200)
