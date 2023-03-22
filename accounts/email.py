@@ -83,7 +83,7 @@ class NoticeMailView(GenericAPIView):
                 subject = subject,
                 body = message,
                 from_email = 'OSOD <officialosod@gmail.com>',
-                bcc = ["tsukiakarii@naver.com"],
+                bcc = send_list,
                 reply_to=['OSOD <officialosod@gmail.com>'],
             )
         email.content_subtype = 'html'
