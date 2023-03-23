@@ -64,13 +64,18 @@ nlp = spacy.load("en_core_web_sm")
 
 # Create a dictionary for pattern replacement
 patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
-
+pronouns = {"his": "ones", "her": "ones", "him": "ones", "my": "ones", "them": "ones"}
 def is_pattern_used(sentence, pattern):
+    if "one's" in pattern:
+        for old, new in pronouns.items():
+            sentence = sentence.replace(old, new)
+        pattern = pattern.replace("one's", "ones")
+
     for old, new in patterns.items():
         sentence = sentence.replace(old, new)
         pattern = pattern.replace(old, new)
-
     pattern_doc = nlp(pattern.lower())
+
     for doc in pattern_doc:
         if doc.lemma_ == "will":
             sentence = sentence.replace("'d", " would")
