@@ -121,11 +121,13 @@ class ReceiveConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
-        self.object = confirmation = self.get_object()
-        confirmation.confirm(self.request)
-        # A React Router Route will handle the failure scenario
-        return HttpResponseRedirect(redirect_to='https://osod.swygbro.com')
-
+        try:
+            self.object = confirmation = self.get_object()
+            confirmation.confirm(self.request)
+            # A React Router Route will handle the failure scenario
+            return HttpResponseRedirect(redirect_to='https://osod.swygbro.com')
+        except:
+            return HttpResponseRedirect(redirect_to='https://osod.swygbro.com')
     def get_object(self, queryset=None):
         key = self.kwargs['key']
         email_confirmation = EmailConfirmationHMAC.from_key(key)
