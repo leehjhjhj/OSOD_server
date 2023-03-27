@@ -4,27 +4,18 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from rest_framework import status
-from email.message import EmailMessage
-from django.core.mail import send_mail, EmailMessage
 from .models import *
-from writing.models import Subsription, Sentence
 from .serializers import *
 from dj_rest_auth.registration.views import SocialLoginView, LoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from allauth.socialaccount.providers.google import views as google_view
-from django.shortcuts import redirect
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from datetime import datetime, timedelta
 from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
 from rest_framework.decorators import api_view, authentication_classes
-from json import JSONDecodeError
 from django.http import JsonResponse
 import requests
-from rest_framework import generics, status
+from rest_framework import status
 from .models import *
 from allauth.socialaccount.models import SocialAccount 
 from rest_framework_simplejwt.authentication import JWTAuthentication
