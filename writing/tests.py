@@ -18,9 +18,11 @@ def is_pattern_used(sentence, pattern):
 
 
     for old, new in patterns.items():
-        sentence = sentence.replace(old, new)
         pattern = pattern.replace(old, new)
-
+        sentence = sentence.replace(old, new)
+        
+    print(pattern,"/", sentence)
+    
     pattern_doc = nlp(pattern.lower())
     
     for doc in pattern_doc:
@@ -37,6 +39,6 @@ def is_pattern_used(sentence, pattern):
 
     return new_pattern in new_sentence
 
-print(is_pattern_used("He is always getting in my way.", "get in one's way"))
+print(is_pattern_used("If it weren't for", "If it weren't for"))
 
 
