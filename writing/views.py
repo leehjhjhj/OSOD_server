@@ -430,7 +430,7 @@ class GrammarCheckView(APIView):
         response = openai.Completion.create(
             model="text-davinci-003",
             #prompt=f"'{text}' correct if grammar wrong. ",
-            prompt=f"'{text}' correct grammar if wrong. Preserve'{today_sentence}' ",
+            prompt=f"'{text}' correct grammar if wrong. Preserve contain '{today_sentence}' ",
             temperature=0,
             max_tokens=60,
             top_p=1.0,
