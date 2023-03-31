@@ -437,7 +437,7 @@ class GrammarCheckView(APIView):
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
-        return Response({'response': response, 'today': today_sentence}, status=status.HTTP_200_OK)
+        #return Response({'response': response, 'today': today_sentence}, status=status.HTTP_200_OK)
         target_res = response.choices[0].text.strip()
         if target_res[0] == "\"":
             cut_target = target_res.strip("\"")
