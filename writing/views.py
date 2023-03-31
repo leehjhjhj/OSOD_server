@@ -288,7 +288,10 @@ def get_dates(request):
                                    created_at__day=date.day,).sentence
         except:
             sentence = None
-        dates['today_sentence'] = today_sentence
+        dates['today_sentence'] = Sentence.objects.get(
+                        created_at__year=today.year,
+                        created_at__month=today.month,
+                        created_at__day=today.day,).sentence
         dates[f'{i}_days_ago'] = {
                 "summary": date.strftime('%m/%d'),
                 "detail": date.strftime('%Y.%m.%d') + ' ' + dateDict[date.weekday()],
