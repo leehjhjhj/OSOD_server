@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'corsheaders',
     'django_crontab',
+    'django_apscheduler',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -251,3 +252,7 @@ AUTH_USER_MODEL = 'accounts.User'
 CRONJOBS = [
 ]
 APPEND_SLASH = False
+
+# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+
+# SCHEDULER_DEFAULT = True

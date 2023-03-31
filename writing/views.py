@@ -25,7 +25,12 @@ import openai
 import spacy
 
 #####################################################
-
+today = datetime.now().date()
+today_sentence = Sentence.objects.get(
+                        created_at__year=today.year,
+                        created_at__month=today.month,
+                        created_at__day=today.day,).sentence
+#####################################################
 def random_nickname():
     a = random.randrange(0,10)
     b = random.randrange(0,10)
@@ -283,10 +288,7 @@ def get_dates(request):
                                    created_at__day=date.day,).sentence
         except:
             sentence = None
-        dates['today_sentence'] = Sentence.objects.get(
-                                    created_at__year=today.year,
-                                    created_at__month=today.month,
-                                    created_at__day=today.day,).sentence
+        dates['today_sentence'] = today_sentence
         dates[f'{i}_days_ago'] = {
                 "summary": date.strftime('%m/%d'),
                 "detail": date.strftime('%Y.%m.%d') + ' ' + dateDict[date.weekday()],
@@ -416,6 +418,8 @@ class TranslateView(APIView):
 #         return response
 #####################################################################################################################
 
+
+
 class GrammarCheckView(APIView):
     def post(self, request):
         openai.api_key = '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'
@@ -425,13 +429,15 @@ class GrammarCheckView(APIView):
         
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=f"'{text}' correct if grammar wrong. don't contain \" ",
+            #prompt=f"'{text}' correct if grammar wrong. ",
+            prompt=f"'{text}' correct ONLY grammar if wrong. Preserve'drop in' ",
             temperature=0,
             max_tokens=60,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
+        #return Response({'response': response}, status=status.HTTP_200_OK)
         target_res = response.choices[0].text.strip()
         if target_res[0] == "\"":
             cut_target = target_res.strip("\"")
