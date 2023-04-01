@@ -25,11 +25,7 @@ import openai
 import spacy
 
 #####################################################
-today = datetime.now().date()
-today_sentence = Sentence.objects.get(
-                        created_at__year=today.year,
-                        created_at__month=today.month,
-                        created_at__day=today.day,).sentence
+
 #####################################################
 def random_nickname():
     a = random.randrange(0,10)
@@ -427,13 +423,14 @@ class GrammarCheckView(APIView):
     def post(self, request):
         openai.api_key = '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'
         text = request.data.get('text')
+        sentence = request.data.get('sentence')
         if not text:
             return Response({'response': "", 'ai': "검사할 문장이 없어요!", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
         
         response = openai.Completion.create(
             model="text-davinci-003",
             #prompt=f"'{text}' correct if grammar wrong. ",
-            prompt=f"'{text}' correct grammar if wrong. Preserve contain '{today_sentence}' ",
+            prompt=f"'{text}' correct grammar if wrong. Preserve contain '{sentence}' ",
             temperature=0,
             max_tokens=60,
             top_p=1.0,
