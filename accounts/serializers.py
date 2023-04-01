@@ -11,21 +11,21 @@ from django.contrib.auth.forms import SetPasswordForm
 from dj_rest_auth.serializers import PasswordResetSerializer
 from django.urls import reverse
 from dj_rest_auth.serializers import PasswordChangeSerializer
+from rest_framework.validators import UniqueValidator
+from allauth.account import app_settings as allauth_settings
 
 class UserSerializer(RegisterSerializer):
-    nickname = serializers.CharField(max_length=50)
-    name = serializers.CharField(max_length=50)
+    password1 = serializers.CharField(error_messages={'blank': '비밀번호를 설정하세요.'})
+    password2 = serializers.CharField(error_messages={'blank': '비밀번호를 설정하세요.'})
+    nickname = serializers.CharField(max_length=50, validators=[UniqueValidator(queryset=User.objects.all(), message='닉네임이 이미 사용중입니다.')]
+                                     ,error_messages={'blank': '닉네임을 입력하세요.'})
+    name = serializers.CharField(max_length=50, error_messages={'blank': '이름을 입력하세요.'})
     subscription = serializers.BooleanField(default=False)
+    email = serializers.EmailField(required=allauth_settings.EMAIL_REQUIRED, error_messages={'blank': '이메일을 입력하세요.'})
 
     class Meta:
         model = User
         fields = ['email', 'password', 'nickname', 'name', 'subscription']
-
-    def validate(self, data):
-        nickname = data['nickname']
-        if User.objects.filter(nickname=nickname).exists():
-            raise serializers.ValidationError({"nickname": "닉네임이 이미 사용중입니다."})
-        return data
     
     def get_cleaned_data(self):
         super(UserSerializer, self).get_cleaned_data()
