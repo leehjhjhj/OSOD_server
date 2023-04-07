@@ -15,24 +15,31 @@ from django.test import RequestFactory
 class MyScheduler:
     def __init__(self):
         self.scheduler = BackgroundScheduler()
+        self.is_running = False  # 스케줄러 실행 여부
+        self.job_id = 'my_job_id'
+
         self.scheduler.add_job(
             self.my_job,
             'cron',
             day_of_week='*',
             hour=23,
-            minute=45,
+            minute=52,
             second=00,
-            id='my_job_id'
+            id=self.job_id
         )
 
     def my_job(self):
+        if self.is_running:  # 이미 실행중인 경우
+            return
+
         try:
-            # view = SubMailView()
-            # view.get(request=None)
+            self.is_running = True  # 스케줄러 실행 중으로 변경
+
             request = RequestFactory().get('/')
             SubMailView.as_view()(request)
         except Exception as e:
             # 예외 처리
             print(e)
         finally:
-            self.scheduler.remove_job('my_job_id')
+            self.is_running = False  # 스케줄러 실행 종료로 변경
+            self.scheduler.remove_job(self.job_id)
