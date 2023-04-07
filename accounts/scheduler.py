@@ -2,6 +2,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from .email import SubMailView
 from django.test import RequestFactory
+from django.http import HttpRequest
 # class MyScheduler:
 #     def __init__(self):
 #         self.scheduler = BackgroundScheduler()
@@ -22,11 +23,13 @@ class MyScheduler:
             self.my_job,
             'cron',
             day_of_week='*',
-            hour=23,
-            minute=52,
+            hour=00,
+            minute=17,
             second=00,
             id=self.job_id
         )
+
+        self.sub_mail_view = SubMailView()
 
     def my_job(self):
         if self.is_running:  # 이미 실행중인 경우
@@ -35,8 +38,8 @@ class MyScheduler:
         try:
             self.is_running = True  # 스케줄러 실행 중으로 변경
 
-            request = RequestFactory().get('/')
-            SubMailView.as_view()(request)
+            request = HttpRequest()
+            self.sub_mail_view.get(request)
         except Exception as e:
             # 예외 처리
             print(e)
