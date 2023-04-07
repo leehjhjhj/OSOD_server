@@ -145,3 +145,6 @@ class NoticeMailSerialzier(serializers.Serializer):
     subject = serializers.CharField(max_length=200)
     body_subject = serializers.CharField(max_length=200)
     body = serializers.CharField(max_length=200)
+
+class SubMailSerialzier(serializers.Serializer):
+    password = serializers.CharField(max_length=200)

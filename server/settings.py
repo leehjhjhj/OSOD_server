@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_crontab',
     'django_apscheduler',
+    'apscheduler',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
