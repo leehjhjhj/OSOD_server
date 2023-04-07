@@ -18,7 +18,7 @@ def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생
 SECRET_KEY = get_secret("SECRET_KEY")
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000', 'https://osod.swygbro.com']

@@ -20,7 +20,7 @@ def get_day_of_the_week(input_created_at):
 class SubMailView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
+    def post(self, request):
         sub_users = User.objects.filter(subscription=True).values('email')
         sub_unknowns = Subsription.objects.values('sub_email')
 
