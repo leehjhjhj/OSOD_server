@@ -17,15 +17,15 @@ cnt = 0
 class MyScheduler:
 
     def __init__(self):
-        self.scheduler = BackgroundScheduler()
+        self.scheduler = BackgroundScheduler(max_instances=1)
         self.is_running = False  # 스케줄러 실행 여부
         self.job_id = 'my_job_id'
         self.scheduler.add_job(
-            self.my_job,
+            self.my_job, 
             'cron',
             day_of_week='*',
             hour=10,
-            minute=3,
+            minute=10,
             second=00,
             id=self.job_id
         )
