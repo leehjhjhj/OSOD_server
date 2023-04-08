@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import grammar
 app_name = 'writing'
 
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
     path('translate/', views.TranslateView.as_view()),
     # path('text-to-speech/', views.TextToSpeechAPI.as_view()),
     # path('text-to-speech-server/', views.TextToSpeechServerdownAPI.as_view()),
-    path('grammar-check/', views.GrammarCheckView.as_view(), name='grammar'),
+    path('grammar-check/', grammar.GrammarCheckView.as_view(), name='grammar'),
     path('pattern-check/', views.CheckPatternView.as_view(), name='Pattern'),
     ##마이페이지 관련##
     path('mypage/today/', views.MypageTodayIWroteView.as_view(), name='today'),

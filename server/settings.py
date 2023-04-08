@@ -1,24 +1,26 @@
 from pathlib import Path
 import os, json 
 from django.core.exceptions import ImproperlyConfigured 
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-secret_file = os.path.join(BASE_DIR, 'secrets.json')
-with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
-    secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+# secret_file = os.path.join(BASE_DIR, 'secrets.json')
+# with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
+#     secrets = json.loads(f.read())
+
+# def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
+#     try:
+#         return secrets[setting]
+#     except KeyError:
+#         error_msg = "Set the {} environment variable".format(setting)
+#         raise ImproperlyConfigured(error_msg)
     
-SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = config('SECRET_KEY')
 
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000', 'https://osod.swygbro.com']
@@ -106,24 +108,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'server.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'OSOD_server',
-        'USER': 'root',
-        'PASSWORD': '3kzv72nlecb326q',
-        'HOST': 'svc.sel3.cloudtype.app',
-        'PORT': '30157'
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
     }
 }
 
@@ -219,7 +212,7 @@ EMAIL_PORT = '587' # gmail과 통신하는 포트
  
 EMAIL_HOST_USER = 'officialosod@gmail.com' # 발신할 이메일
 
-EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD") # 발신할 메일의 비밀번호
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD") # 발신할 메일의 비밀번호
 
 EMAIL_USE_TLS = True # TLS 보안 방법
 
@@ -243,8 +236,8 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[OSOD] " 
 #####################소셜로그인 관련###################################
 
-SOCIAL_AUTH_GOOGLE_CLIENT_ID = get_secret("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_SECRET = get_secret("SOCIAL_AUTH_GOOGLE_SECRET")
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = config("SOCIAL_AUTH_GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_SECRET = config("SOCIAL_AUTH_GOOGLE_SECRET")
 STATE = "vyv2dj"
 
 SITE_ID = 1
@@ -253,7 +246,3 @@ AUTH_USER_MODEL = 'accounts.User'
 CRONJOBS = [
 ]
 APPEND_SLASH = False
-
-# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
-
-# SCHEDULER_DEFAULT = True

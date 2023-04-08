@@ -28,18 +28,18 @@ from rest_framework.exceptions import MethodNotAllowed
 from django.http import HttpResponseRedirect
 User = get_user_model()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-secret_file = os.path.join(BASE_DIR, 'secrets.json')
-with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
-    secrets = json.loads(f.read())
+# # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR = Path(__file__).resolve().parent.parent
+# secret_file = os.path.join(BASE_DIR, 'secrets.json')
+# with open(secret_file, 'r') as f: #open as로 secret.json을 열어줍니다.
+    # secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+# def get_secret(setting, secrets=secrets): #예외 처리를 통해 오류 발생을 검출합니다.
+#     try:
+#         return secrets[setting]
+#     except KeyError:
+#         error_msg = "Set the {} environment variable".format(setting)
+#         raise ImproperlyConfigured(error_msg)
 
 #################################
 def get_day_of_the_week(input_created_at):
@@ -236,17 +236,7 @@ class GoogleLogin(SocialLoginView):
 
 class CustomPasswordResetView(PasswordResetView):
     serializer_class = CustomPasswordResetSerializer
-    # extra_email_context = {}
-    
-    # def form_valid(self, form):
-    #     response = super().form_valid(form)
-    #     uid = urlsafe_base64_encode(force_bytes(self.object.pk))
-    #     token = PasswordResetTokenGenerator().make_token(self.object)
-    #     password_reset_url = f"{self.request.scheme}://localhost:3000/password/reset/confirm/uid={uid}&token={token}/"
-    #     extra_context = {'password_reset_url': password_reset_url}
-    #     context = {**self.extra_email_context, **extra_context}
-    #     self.send_mail(context=context)
-    #     return response
+
     
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 

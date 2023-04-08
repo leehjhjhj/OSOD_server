@@ -27,6 +27,22 @@ jobs:
               env:
                 - name: DJANGO_SECRET
                   value: 5xeuu%71e@wu=#f@^xs6fp0d$adc@c7dvk@8-gfb%0r@ynpe*-
+                - name: EMAIL_HOST_PASSWORD
+                  value: pvgaflpzzuhschjh
+                - name: SOCIAL_AUTH_GOOGLE_CLIENT_ID
+                  value: 545784795345-fmtsh28pg9pu9n17ks8ob987qvevrpiu.apps.googleusercontent.com
+                - name: SOCIAL_AUTH_GOOGLE_SECRET
+                  value: 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
+                - name: DB_USER
+                  value: root
+                - name: DB_PASSWORD
+                  value: 3kzv72nlecb326q
+                - name: DB_HOST
+                  value: svc.sel3.cloudtype.app
+                - name: DB_PORT
+                  value: 30157
+                - name: OPEN_AI
+                  value: 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
               ports: 8000
               start: python3 manage.py runserver --noreload 0:8000
             context:

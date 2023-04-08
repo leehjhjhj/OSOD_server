@@ -21,9 +21,8 @@ import requests
 from google.oauth2 import service_account
 from google.cloud import texttospeech
 from rest_framework_simplejwt.authentication import JWTAuthentication
-import openai
-import spacy
-
+from .pattern import is_pattern_used
+from decouple import config
 #####################################################
 
 #####################################################
@@ -33,16 +32,6 @@ def random_nickname():
     first = ['영작하는', '영어천재', '거의 원어민', '영어마스터', '영작달인', '영어일등', '영작솜씨왕', '영문장달인', '영어고수', '영어박사']
     second = ['참새', '직박구리', '갈매기', '메추리', '비둘기', '기러기', '까마귀', '딱따구리', '뻐꾸기', '꿩']
     return f"{first[a]} {second[b]}"
-
-def grammar_wrong_response():
-    a = random.randrange(0,4)
-    first = ['이런건 어때요?', '제가 한번 제안할게요!', '이게 더 자연스러울 수도 있어요!', '이게 더 나을 수도 있어요!', '이렇게 작문할 수도 있어요!']
-    return f"{first[a]}"
-
-def grammar_correct_response():
-    a = random.randrange(0,4)
-    first = ['완벽해요!', '틀린게 없는 문장이에요!', '너무 좋은걸요?', '완벽한 문장이에요!!', '굉장히 좋은 문장이에요!']
-    return f"{first[a]}"
 
 def random_string(length):
     letters = string.ascii_lowercase
@@ -60,36 +49,36 @@ def get_today_postcnt(request):
                 "today_postcnt": today_postcnt,
                 }, status = status.HTTP_200_OK)
 
-# Load the model only once
-nlp = spacy.load("en_core_web_sm")
+# # Load the model only once
+# nlp = spacy.load("en_core_web_sm")
 
-# Create a dictionary for pattern replacement
-patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
-pronouns = {"his": "ones", "her": "ones", "him": "ones", "my": "ones", "them": "ones"}
-def is_pattern_used(sentence, pattern):
-    if "one's" in pattern:
-        for old, new in pronouns.items():
-            sentence = sentence.replace(old, new)
-        pattern = pattern.replace("one's", "ones")
+# # Create a dictionary for pattern replacement
+# patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
+# pronouns = {"his": "ones", "her": "ones", "him": "ones", "my": "ones", "them": "ones"}
+# def is_pattern_used(sentence, pattern):
+#     if "one's" in pattern:
+#         for old, new in pronouns.items():
+#             sentence = sentence.replace(old, new)
+#         pattern = pattern.replace("one's", "ones")
 
-    for old, new in patterns.items():
-        sentence = sentence.replace(old, new)
-        pattern = pattern.replace(old, new)
-    pattern_doc = nlp(pattern.lower())
+#     for old, new in patterns.items():
+#         sentence = sentence.replace(old, new)
+#         pattern = pattern.replace(old, new)
+#     pattern_doc = nlp(pattern.lower())
 
-    for doc in pattern_doc:
-        if doc.lemma_ == "will":
-            sentence = sentence.replace("'d", " would")
-        elif doc.lemma_ == "have":
-            sentence = sentence.replace("'d", " had").replace("'s", " has")
+#     for doc in pattern_doc:
+#         if doc.lemma_ == "will":
+#             sentence = sentence.replace("'d", " would")
+#         elif doc.lemma_ == "have":
+#             sentence = sentence.replace("'d", " had").replace("'s", " has")
 
-    sentence_doc = nlp(sentence.lower())
+#     sentence_doc = nlp(sentence.lower())
 
-    # Use a generator expression instead of a list comprehension
-    new_sentence = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in sentence_doc)
-    new_pattern = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in pattern_doc)
+#     # Use a generator expression instead of a list comprehension
+#     new_sentence = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in sentence_doc)
+#     new_pattern = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in pattern_doc)
 
-    return new_pattern in new_sentence
+#     return new_pattern in new_sentence
     
 ######################################################
 class PostPageNumberPagination(PageNumberPagination):
@@ -419,55 +408,55 @@ class TranslateView(APIView):
 
 
 
-class GrammarCheckView(APIView):
-    def post(self, request):
-        openai.api_key = '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'
-        text = request.data.get('text')
-        sentence = request.data.get('sentence')
-        if not text:
-            return Response({'response': "", 'ai': "검사할 문장이 없어요!", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
+# class GrammarCheckView(APIView):
+#     def post(self, request):
+#         openai.api_key = config('OPEN_AI')
+#         text = request.data.get('text')
+#         sentence = request.data.get('sentence')
+#         if not text:
+#             return Response({'response': "", 'ai': "검사할 문장이 없어요!", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
         
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            #prompt=f"'{text}' correct if grammar wrong. ",
-            prompt=f"'{text}' correct grammar if wrong. Preserve contain '{sentence}' ",
-            temperature=0,
-            max_tokens=60,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )
-        #return Response({'response': response, 'today': today_sentence}, status=status.HTTP_200_OK)
-        target_res = response.choices[0].text.strip()
-        if target_res[0] == "\"":
-            cut_target = target_res.strip("\"")
-            if text == cut_target:
-                res = cut_target
-                ai = grammar_correct_response()
-                bool = True
-            else:
-                res = cut_target
-                ai = grammar_wrong_response()
-                bool = False
+#         response = openai.Completion.create(
+#             model="text-davinci-003",
+#             #prompt=f"'{text}' correct if grammar wrong. ",
+#             prompt=f"'{text}' correct grammar if wrong. Preserve contain '{sentence}' ",
+#             temperature=0,
+#             max_tokens=60,
+#             top_p=1.0,
+#             frequency_penalty=0.0,
+#             presence_penalty=0.0
+#         )
+#         #return Response({'response': response, 'today': today_sentence}, status=status.HTTP_200_OK)
+#         target_res = response.choices[0].text.strip()
+#         if target_res[0] == "\"":
+#             cut_target = target_res.strip("\"")
+#             if text == cut_target:
+#                 res = cut_target
+#                 ai = grammar_correct_response()
+#                 bool = True
+#             else:
+#                 res = cut_target
+#                 ai = grammar_wrong_response()
+#                 bool = False
 
-        else:
-            if text == target_res:
-                res = target_res
-                ai = grammar_correct_response()
-                bool = True
-            else:
-                res = target_res
-                ai = grammar_wrong_response()
-                bool = False
+#         else:
+#             if text == target_res:
+#                 res = target_res
+#                 ai = grammar_correct_response()
+#                 bool = True
+#             else:
+#                 res = target_res
+#                 ai = grammar_wrong_response()
+#                 bool = False
 
-        # if text == response.choices[0].text.strip():
-        #     res = response.choices[0].text.strip()
-        #     ai = grammar_correct_response()
-        #     bool = True
+#         # if text == response.choices[0].text.strip():
+#         #     res = response.choices[0].text.strip()
+#         #     ai = grammar_correct_response()
+#         #     bool = True
 
-        return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
+#         return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
 
-#Correct this to standard English.
-#.choices[0].text.strip()
+# #Correct this to standard English.
+# #.choices[0].text.strip()
 
 
