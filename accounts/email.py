@@ -11,6 +11,7 @@ from rest_framework.generics import GenericAPIView
 from .serializers import NoticeMailSerialzier
 from django.utils.safestring import mark_safe
 
+
 def get_day_of_the_week(input_created_at):
     dateDict = {0: '월요일', 1:'화요일', 2:'수요일', 3:'목요일', 4:'금요일', 5:'토요일', 6:'일요일'}
     created_at = input_created_at

@@ -15,9 +15,7 @@ import time
 #         # view.get(request=None)
 #         request = RequestFactory().get('/')
 #         SubMailView.as_view()(request)
-cnt = 0
-class MyScheduler:
-    
+class MyScheduler: 
     def __init__(self):
         self.scheduler = BackgroundScheduler(max_instances=1)
         self.is_running = False  # 스케줄러 실행 여부
@@ -27,31 +25,22 @@ class MyScheduler:
             'cron',
             day_of_week='*',
             hour=10,
-            minute=32,
-            second=00,
+            minute=52,
+            second=30,
+            # 'interval',
+            # seconds=10,
             id=self.job_id
         )
-
         self.sub_mail_view = SubMailView()
-
     def my_job(self):
-        time.sleep(15)
-        global cnt
         if self.is_running:  # 이미 실행중인 경우
-            return
-        if cnt == 1:
             return
         try:
             self.is_running = True  # 스케줄러 실행 중으로 변경
             self.sub_mail_view.get(request=None)
-            time.sleep(15)
-            cnt += 1
-            print(cnt)
-            if cnt == 1:
-                return
+
         except Exception as e:
             print(e)
         finally:
-            
             self.is_running = False  # 스케줄러 실행 종료로 변경
             self.scheduler.remove_job(self.job_id)
