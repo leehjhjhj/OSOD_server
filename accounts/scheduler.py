@@ -3,18 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .email import SubMailView
 from django.test import RequestFactory
 from django.http import HttpRequest
-import time
 
-# class MyScheduler:
-#     def __init__(self):
-#         self.scheduler = BackgroundScheduler()
-#         self.scheduler.add_job(self.my_job, 'cron', day_of_week='*', hour=23, minute=36, second=40)
-
-#     def my_job(self):
-#         # view = SubMailView()
-#         # view.get(request=None)
-#         request = RequestFactory().get('/')
-#         SubMailView.as_view()(request)
 class MyScheduler: 
     def __init__(self):
         self.scheduler = BackgroundScheduler(max_instances=1)
@@ -24,11 +13,9 @@ class MyScheduler:
             self.my_job, 
             'cron',
             day_of_week='*',
-            hour=11,
+            hour=6,
             minute=30,
-            second=30,
-            # 'interval',
-            # seconds=10,
+            second=00,
             id=self.job_id
         )
         self.sub_mail_view = SubMailView()

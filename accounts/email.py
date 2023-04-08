@@ -72,7 +72,7 @@ class NoticeMailView(GenericAPIView):
 
         send_list = [sub_user['email'] for sub_user in sub_users] + [sub_unknown['sub_email'] for sub_unknown in sub_unknowns]
         send_list = list(dict.fromkeys(send_list))
-
+        #send_list = ['osodofficial@gmail.com']
         context = {
             'body_subject': body_subject,
             'in_body': mark_safe(in_body)
