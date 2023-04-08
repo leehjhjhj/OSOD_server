@@ -3,6 +3,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .email import SubMailView
 from django.test import RequestFactory
 from django.http import HttpRequest
+import time
+
 # class MyScheduler:
 #     def __init__(self):
 #         self.scheduler = BackgroundScheduler()
@@ -25,7 +27,7 @@ class MyScheduler:
             'cron',
             day_of_week='*',
             hour=10,
-            minute=10,
+            minute=18,
             second=00,
             id=self.job_id
         )
@@ -43,6 +45,7 @@ class MyScheduler:
             # request = HttpRequest()
             # self.sub_mail_view.get(request)
             self.sub_mail_view.get(request=None)
+            time.sleep(15)
             cnt += 1
             print(cnt)
             if cnt == 1:
@@ -50,5 +53,6 @@ class MyScheduler:
         except Exception as e:
             print(e)
         finally:
+            
             self.is_running = False  # 스케줄러 실행 종료로 변경
             self.scheduler.remove_job(self.job_id)
