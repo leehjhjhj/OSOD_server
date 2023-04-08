@@ -17,7 +17,7 @@ import time
 #         SubMailView.as_view()(request)
 cnt = 0
 class MyScheduler:
-
+    
     def __init__(self):
         self.scheduler = BackgroundScheduler(max_instances=1)
         self.is_running = False  # 스케줄러 실행 여부
@@ -27,7 +27,7 @@ class MyScheduler:
             'cron',
             day_of_week='*',
             hour=10,
-            minute=18,
+            minute=32,
             second=00,
             id=self.job_id
         )
@@ -35,6 +35,7 @@ class MyScheduler:
         self.sub_mail_view = SubMailView()
 
     def my_job(self):
+        time.sleep(15)
         global cnt
         if self.is_running:  # 이미 실행중인 경우
             return
@@ -42,8 +43,6 @@ class MyScheduler:
             return
         try:
             self.is_running = True  # 스케줄러 실행 중으로 변경
-            # request = HttpRequest()
-            # self.sub_mail_view.get(request)
             self.sub_mail_view.get(request=None)
             time.sleep(15)
             cnt += 1
