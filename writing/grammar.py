@@ -17,8 +17,7 @@ def grammar_correct_response():
 
 class GrammarCheckView(APIView):
     def post(self, request):
-        #openai.api_key = config('OPEN_AI')
-        print(config('OPEN_AI'))
+        openai.api_key = config('OPEN_AI')
         text = request.data.get('text')
         sentence = request.data.get('sentence')
         if not text:
