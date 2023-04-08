@@ -25,7 +25,7 @@ class MyScheduler:
             'cron',
             day_of_week='*',
             hour=10,
-            minute=52,
+            minute=55,
             second=30,
             # 'interval',
             # seconds=10,
