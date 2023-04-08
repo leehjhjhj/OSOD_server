@@ -28,7 +28,7 @@ jobs:
                 - name: DJANGO_SECRET
                   value: 5xeuu%71e@wu=#f@^xs6fp0d$adc@c7dvk@8-gfb%0r@ynpe*-
               ports: 8000
-              start: python3 manage.py runserver --noreload
+              start: python3 manage.py runserver --noreload 0:8000
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
