@@ -25,7 +25,7 @@ class MyScheduler:
             'cron',
             day_of_week='*',
             hour=9,
-            minute=26,
+            minute=29,
             second=00,
             id=self.job_id
         )
@@ -42,6 +42,7 @@ class MyScheduler:
             # self.sub_mail_view.get(request)
             self.sub_mail_view.get(request=None)
             self.cnt += 1
+            print(self.cnt)
             if self.cnt == 1:
                 return
         except Exception as e:
