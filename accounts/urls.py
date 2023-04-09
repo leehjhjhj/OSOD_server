@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 from .email import *
 from .ranking import *
+from .change import *
 app_name = 'accounts'
 
 

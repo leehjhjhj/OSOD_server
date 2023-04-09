@@ -1,17 +1,15 @@
-from django.shortcuts import render
+
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView, GenericAPIView
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+
 from rest_framework.pagination import PageNumberPagination
 from collections import OrderedDict
 from rest_framework import status
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
 import random
 import string
 from google.cloud import translate_v2 as translate
@@ -19,10 +17,8 @@ import os
 from rest_framework.permissions import IsAuthenticated
 import requests
 from google.oauth2 import service_account
-from google.cloud import texttospeech
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .pattern import is_pattern_used
-from decouple import config
 #####################################################
 
 #####################################################
@@ -49,38 +45,6 @@ def get_today_postcnt(request):
                 "today_postcnt": today_postcnt,
                 }, status = status.HTTP_200_OK)
 
-# # Load the model only once
-# nlp = spacy.load("en_core_web_sm")
-
-# # Create a dictionary for pattern replacement
-# patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
-# pronouns = {"his": "ones", "her": "ones", "him": "ones", "my": "ones", "them": "ones"}
-# def is_pattern_used(sentence, pattern):
-#     if "one's" in pattern:
-#         for old, new in pronouns.items():
-#             sentence = sentence.replace(old, new)
-#         pattern = pattern.replace("one's", "ones")
-
-#     for old, new in patterns.items():
-#         sentence = sentence.replace(old, new)
-#         pattern = pattern.replace(old, new)
-#     pattern_doc = nlp(pattern.lower())
-
-#     for doc in pattern_doc:
-#         if doc.lemma_ == "will":
-#             sentence = sentence.replace("'d", " would")
-#         elif doc.lemma_ == "have":
-#             sentence = sentence.replace("'d", " had").replace("'s", " has")
-
-#     sentence_doc = nlp(sentence.lower())
-
-#     # Use a generator expression instead of a list comprehension
-#     new_sentence = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in sentence_doc)
-#     new_pattern = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in pattern_doc)
-
-#     return new_pattern in new_sentence
-    
-######################################################
 class PostPageNumberPagination(PageNumberPagination):
     page_size = 10
 
@@ -354,109 +318,17 @@ class WhatILikeView(ListAPIView):
 ########번역 관련########
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/app/innate-vigil-377910-ff58e0aebf0f.json'
 #os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/leehyunje/Postman/OSOD/server/innate-vigil-377910-ff58e0aebf0f.json'
+
+
+from google.auth.credentials import Credentials
+
+
 class TranslateView(APIView):
     def post(self, request):
         text = request.data.get('text')
         if not text:
             return Response({'translation': "번역할 문장이 없어요!"}, status=status.HTTP_200_OK)
+        #client = translate.Client()
         client = translate.Client()
         result = client.translate(text, target_language='ko')
         return Response({'translation': result['translatedText']}, status=status.HTTP_200_OK)
-
-# from django.http import StreamingHttpResponse
-
-# import io
-
-# class TextToSpeechAPI(APIView):
-#     def post(self, request):
-#         text = request.data.get('text')
-#         client = texttospeech.TextToSpeechClient()
-#         synthesis_input = texttospeech.SynthesisInput(text=text)
-#         voice = texttospeech.VoiceSelectionParams(
-#             language_code='en-US', ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
-#         )
-#         audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
-#         response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
-#         audio_content = io.BytesIO(response.audio_content)
-#         response = StreamingHttpResponse(audio_content, content_type='audio/mpeg')
-#         response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
-#         return response
-    
-# #다운해서 확인하는용#
-# class TextToSpeechServerdownAPI(APIView):
-#     def post(self, request):
-#         text = request.data.get('text')
-#         client = texttospeech.TextToSpeechClient()
-#         synthesis_input = texttospeech.SynthesisInput(text=text)
-#         voice = texttospeech.VoiceSelectionParams(
-#             language_code='en-US', ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
-#         )
-#         audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
-#         response = client.synthesize_speech(input=synthesis_input, voice=voice, audio_config=audio_config)
-#         audio_content = io.BytesIO(response.audio_content)
-        
-#         # 파일로 저장
-#         with open('audio.mp3', 'wb') as f:
-#             f.write(audio_content.getbuffer())
-        
-#         # StreamingHttpResponse로 클라이언트에게 반환
-#         audio_content.seek(0)
-#         response = StreamingHttpResponse(audio_content, content_type='audio/mpeg')
-#         response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
-#         return response
-#####################################################################################################################
-
-
-
-# class GrammarCheckView(APIView):
-#     def post(self, request):
-#         openai.api_key = config('OPEN_AI')
-#         text = request.data.get('text')
-#         sentence = request.data.get('sentence')
-#         if not text:
-#             return Response({'response': "", 'ai': "검사할 문장이 없어요!", 'original': "", 'bool': False}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         response = openai.Completion.create(
-#             model="text-davinci-003",
-#             #prompt=f"'{text}' correct if grammar wrong. ",
-#             prompt=f"'{text}' correct grammar if wrong. Preserve contain '{sentence}' ",
-#             temperature=0,
-#             max_tokens=60,
-#             top_p=1.0,
-#             frequency_penalty=0.0,
-#             presence_penalty=0.0
-#         )
-#         #return Response({'response': response, 'today': today_sentence}, status=status.HTTP_200_OK)
-#         target_res = response.choices[0].text.strip()
-#         if target_res[0] == "\"":
-#             cut_target = target_res.strip("\"")
-#             if text == cut_target:
-#                 res = cut_target
-#                 ai = grammar_correct_response()
-#                 bool = True
-#             else:
-#                 res = cut_target
-#                 ai = grammar_wrong_response()
-#                 bool = False
-
-#         else:
-#             if text == target_res:
-#                 res = target_res
-#                 ai = grammar_correct_response()
-#                 bool = True
-#             else:
-#                 res = target_res
-#                 ai = grammar_wrong_response()
-#                 bool = False
-
-#         # if text == response.choices[0].text.strip():
-#         #     res = response.choices[0].text.strip()
-#         #     ai = grammar_correct_response()
-#         #     bool = True
-
-#         return Response({'response': res, 'ai': ai, 'original': text, 'bool': bool}, status=status.HTTP_200_OK)
-
-# #Correct this to standard English.
-# #.choices[0].text.strip()
-
-

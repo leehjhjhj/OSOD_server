@@ -1,12 +1,7 @@
-
-
- 
 import spacy
 
-# Load the model only once
 nlp = spacy.load("en_core_web_sm")
 
-# Create a dictionary for pattern replacement
 patterns = {"'ve": " have", "'ll": " will", "n't": " not", "'re": " are"}
 pronouns = {"his": "ones", "her": "ones", "him": "ones", "my": "ones", "them": "ones"}
 
@@ -33,7 +28,7 @@ def is_pattern_used(sentence, pattern):
 
     sentence_doc = nlp(sentence.lower())
 
-    # Use a generator expression instead of a list comprehension
+
     new_sentence = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in sentence_doc)
     new_pattern = " ".join(token.lemma_ if token.pos_ in {"AUX", "VERB"} else token.text for token in pattern_doc)
 

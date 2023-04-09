@@ -44,7 +44,7 @@ jobs:
                 - name: OPEN_AI
                   value: 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
               ports: 8000
-              start: python3 manage.py runserver --noreload 0:8000
+              start: python manage.py runserver 0.0.0.0:8000 --noreload
             context:
               git:
                 url: git@github.com:${{ github.repository }}.git
