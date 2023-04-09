@@ -26,7 +26,9 @@ jobs:
             options:
               env:
                 - name: DJANGO_SECRET
-                  value: 5xeuu%71e@wu=#f@^xs6fp0d$adc@c7dvk@8-gfb%0r@ynpe*-
+                  value: django-insecure-bg_l%0oagu@%3)1eez_6ii8f=+2!a!^8b#$jc(h#lkhkq8y4a^
+                - name: SECRET_KEY
+                  value: 
                 - name: EMAIL_HOST_PASSWORD
                   value: pvgaflpzzuhschjh
                 - name: SOCIAL_AUTH_GOOGLE_CLIENT_ID
