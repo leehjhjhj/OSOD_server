@@ -13,8 +13,8 @@ class MyScheduler:
             self.my_job, 
             'cron',
             day_of_week='*',
-            hour=9,
-            minute=20,
+            hour=6,
+            minute=30,
             second=00,
             id=self.job_id
         )
