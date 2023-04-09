@@ -44,7 +44,7 @@ jobs:
                 - name: DB_PORT
                   value: 30157
                 - name: OPEN_AI
-                  value: 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
+                  value: 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
               ports: 8000
               start: python manage.py runserver 0.0.0.0:8000 --noreload
             context:
