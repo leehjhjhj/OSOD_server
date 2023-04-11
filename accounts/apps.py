@@ -8,4 +8,4 @@ class AccountsConfig(AppConfig):
     def ready(self):
         from .scheduler import MyScheduler
         scheduler = MyScheduler()
-        scheduler.start()
+        scheduler.scheduler.start()
