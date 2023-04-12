@@ -32,9 +32,9 @@ class SubMailView(APIView):
             created_at__day=today.day,
         )
 
-        #send_list = [sub_user['email'] for sub_user in sub_users] + [sub_unknown['sub_email'] for sub_unknown in sub_unknowns]
+        send_list = [sub_user['email'] for sub_user in sub_users] + [sub_unknown['sub_email'] for sub_unknown in sub_unknowns]
         send_list = list(dict.fromkeys(send_list))
-        send_list = ["201802977@hufs.ac.kr", "tsukiakarii@naver.com", "genioustic@naver.com"]
+        #send_list = ["201802977@hufs.ac.kr", "tsukiakarii@naver.com", "genioustic@naver.com"]
         context = {
             'created_at': target_sentence.created_at,
             "day_of_the_week": get_day_of_the_week(target_sentence.created_at),
