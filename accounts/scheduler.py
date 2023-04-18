@@ -49,8 +49,8 @@ class MyScheduler:
 
     def my_job(self):
         try:
-            self.sub_mail_view.get(request=None)
             print('SubMailView.get() function is called.')
+            self.sub_mail_view.get(request=None)
         except Exception as e:
             print(e)
 
