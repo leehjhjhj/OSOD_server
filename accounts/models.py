@@ -12,3 +12,4 @@ class User(AbstractUser):
     subscription = models.BooleanField(default=False, null=True)
     liked_num = models.IntegerField(default=0, null=True)
     is_first = models.BooleanField(default=True, null=True)
+

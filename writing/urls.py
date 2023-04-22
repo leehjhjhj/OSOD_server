@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import grammar
+from . import mypage
 app_name = 'writing'
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path('mypage/query=<str:date>/', views.MypageOrderView.as_view(), name='MypageOrderView'),
     path('mypage/userdetail/', views.MypageUserDetailView.as_view(), name='userdetail'),
     path('mypage/ilike/', views.WhatILikeView.as_view(), name='WhatILikeView'),
+    path('mypage/iswriting/', mypage.WeekIsWritingView.as_view(), name='week_is_writing'),
 ]

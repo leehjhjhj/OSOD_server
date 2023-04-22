@@ -15,8 +15,6 @@ import string
 from google.cloud import translate_v2 as translate
 import os
 from rest_framework.permissions import IsAuthenticated
-import requests
-from google.oauth2 import service_account
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .pattern import is_pattern_used
 #####################################################

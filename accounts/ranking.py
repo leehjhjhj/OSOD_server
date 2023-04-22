@@ -1,7 +1,6 @@
 from django.utils import timezone
 from django.db.models import Count
 from rest_framework import generics
-from rest_framework.response import Response
 from .models import User
 from writing.models import Post
 from .serializers import UserDetailSerializer
@@ -21,3 +20,9 @@ class UserRankingView(generics.ListAPIView):
 
         # ID 목록에 해당하는 사용자 객체 반환
         return User.objects.filter(id__in=user_ids)
+    
+
+
+
+
+
