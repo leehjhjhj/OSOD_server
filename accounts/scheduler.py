@@ -1,4 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from django.db import close_old_connections
 from .email import SubMailView
 class MyScheduler:
     def __init__(self):
@@ -17,6 +18,7 @@ class MyScheduler:
 
     def my_job(self):
         try:
+            close_old_connections()
             print('SubMailView.get() function is called.')
             self.sub_mail_view.get(request=None)
         except Exception as e:
