@@ -148,3 +148,8 @@ class NoticeMailSerialzier(serializers.Serializer):
 
 class SubMailSerialzier(serializers.Serializer):
     password = serializers.CharField(max_length=200)
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['body']

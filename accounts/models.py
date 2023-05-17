@@ -13,3 +13,6 @@ class User(AbstractUser):
     liked_num = models.IntegerField(default=0, null=True)
     is_first = models.BooleanField(default=True, null=True)
 
+class Feedback(models.Model):
+     body = models.CharField(max_length=200)
+     

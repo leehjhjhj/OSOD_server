@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ['https://port-0-osod-108dypx2ale9l8kjq.sel3.cloudtype.app', 'http://localhost:3000', 'https://osod.swygbro.com']

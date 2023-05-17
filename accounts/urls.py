@@ -3,6 +3,7 @@ from .views import *
 from .email import *
 from .ranking import *
 from .change import *
+from .feedback import FeedbackListCreateView
 app_name = 'accounts'
 
 
@@ -16,4 +17,5 @@ urlpatterns = [
     path('google/login/finish/', GoogleLogin.as_view(), name='google_login_finish'),
     path('change-nickname/', change_nickname, name='nickname'),
     path('ranking/', UserRankingView.as_view(), name='ranking'),
+    path('feedback/', FeedbackListCreateView.as_view(), name='FeedbackListCreate'),
 ]
