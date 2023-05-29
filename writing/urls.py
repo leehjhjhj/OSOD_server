@@ -31,5 +31,5 @@ urlpatterns = [
     path('mypage/query=<str:date>/', MypageOrderView.as_view(), name='MypageOrderView'),
     path('mypage/userdetail/', MypageUserDetailView.as_view(), name='userdetail'),
     path('mypage/ilike/', WhatILikeView.as_view(), name='WhatILikeView'),
-    path('mypage/iswriting/', WeekIsWritingView.as_view(), name='week_is_writing'),
+    path('mypage/week/', WeekIsWritingView.as_view(), name='week_is_writing'),
 ]

@@ -7,8 +7,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     username = None
-    nickname = models.CharField(max_length=50, unique=True, null=True)
-    name = models.CharField(max_length=50, null=True)
+    nickname = models.CharField(max_length=12, unique=True, null=True)
+    name = models.CharField(max_length=512, null=True)
     subscription = models.BooleanField(default=False, null=True)
     liked_num = models.IntegerField(default=0, null=True)
     is_first = models.BooleanField(default=True, null=True)
